@@ -1,0 +1,9 @@
+node_modules
+.output
+.wrangler
+.tanstack
+dist
+.env
+.env.*
+!.env.example
+supabase/functions/.env

@@ -1,0 +1,27 @@
+# Configuration Supabase CLI — voir https://supabase.com/docs/guides/local-development/cli/config
+# Ce fichier documente les réglages Auth attendus ; à synchroniser avec le
+# Dashboard du projet distant (Authentication > Providers / MFA) si le projet
+# n'est pas géré via `supabase db push` / CLI.
+
+[auth]
+enable_signup = true
+
+# TOTP (Google Authenticator, Authy...) — section 10 : "2FA obligatoire pour
+# les administrateurs". L'activation ici rend l'ENRÔLEMENT possible ; rien
+# n'oblige un admin à l'activer tant que ce n'est pas vérifié côté application
+# (has_mfa_session() dans 0011_auth_hardening.sql bloque déjà les actions
+# sensibles sans session aal2, ce qui incite de fait à l'enrôlement, mais un
+# rappel/blocage à la connexion pour les comptes admin reste à ajouter côté
+# frontend — hors périmètre SQL).
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+# Hook d'envoi de SMS — NON CONFIGURÉ. phone-otp-request/phone-otp-verify
+# (0011_auth_hardening.sql) gèrent la vérification de numéro applicative de
+# CampusMarket indépendamment de ce hook ; celui-ci ne concerne que le flux
+# natif Supabase Auth "signInWithOtp({ phone })" si vous décidez un jour de
+# vous authentifier par téléphone plutôt que par email. Laissé ici en
+# documentation pour éviter de le découvrir plus tard.
+[auth.sms]
+enable_signup = false
