@@ -1,19 +1,23 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Check, CheckCircle, Clock, Search, Users } from "@/components/icons";
+import { Check, CheckCircle, Clock, Lock, Plus, Search, Users } from "@/components/icons";
 import { AppLink } from "@/components/cm/app-link";
 import { Pill } from "@/components/cm/badges";
 import { Avatar } from "@/components/cm/commerce";
-import { InlineAlert, StateScreen } from "@/components/cm/feedback";
+import { ConfirmDialog, InlineAlert, StateScreen } from "@/components/cm/feedback";
 import { NetworkErrorScreen, ServerErrorScreen } from "@/components/cm/screens";
 import { GroupProgress } from "@/components/marketplace/GroupBuy";
+import { CreateGroupBuyDialog } from "@/components/marketplace/CreateGroupBuyDialog";
+import { UNBLOCK_FEE, UnblockDialog } from "@/components/marketplace/UnblockDialog";
 import { ProductGallery } from "@/components/marketplace/ProductGallery";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { isNetworkError } from "@/lib/api/errors";
-import { useGroupBuyForProduct, useGroupParticipants } from "@/lib/api/groupbuys";
+import { useGroupBuyActions, useGroupBuyForProduct, useGroupParticipants, useMyGroupBuyBlock, useMyParticipation } from "@/lib/api/groupbuys";
 import { useProduct } from "@/lib/api/products";
 import { formatFcfa } from "@/lib/domain";
-import { currentTier, nextTier, savingPercent, timeLeft, type GroupBuy } from "@/lib/groupbuy-model";
+import { currentTier, formatDeadline, nextTier, savingPercent, timeLeft, type GroupBuy } from "@/lib/groupbuy-model";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
@@ -70,10 +74,18 @@ function Participants({ group, isOrganizer }: { group: GroupBuy; isOrganizer: bo
 function GroupBuyPage() {
   const { id } = Route.useParams();
   const { session } = useAuth();
+  const me = session?.user.id;
   const productQuery = useProduct(id);
   const groupQuery = useGroupBuyForProduct(id);
   const product = productQuery.data;
   const group = groupQuery.data;
+  const participation = useMyParticipation(group?.id, me);
+  const blockQuery = useMyGroupBuyBlock(me);
+  const acts = useGroupBuyActions();
+  const [leaveOpen, setLeaveOpen] = useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const [unblockOpen, setUnblockOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
 
   const header = <PageHeader kicker="Marketplace" title="Achat groupé" breadcrumbs={[{ label: "Accueil", to: "/" }, { label: "Marketplace", to: "/marketplace" }, { label: "Achats groupés", to: "/marketplace?vue=groupes" }, { label: product?.name ?? "Annonce" }]} />;
 
@@ -82,26 +94,52 @@ function GroupBuyPage() {
   }
   const failed = productQuery.isError ? productQuery : groupQuery.isError ? groupQuery : null;
   if (failed) return <div>{header}{isNetworkError(failed.error) ? <NetworkErrorScreen compact onRetry={() => void failed.refetch()} /> : <ServerErrorScreen compact onRetry={() => void failed.refetch()} />}</div>;
-  if (!product || !group) {
+
+  const canCreate = !!product && me === product.sellerId && product.status === "published" && product.quantity >= 2;
+  if (!product) {
+    return <div>{header}<StateScreen icon={Search} title="Annonce introuvable" description="Cette annonce n'existe plus." actions={<Button asChild size="lg"><AppLink to="/marketplace">Retour à la marketplace</AppLink></Button>} /></div>;
+  }
+  if (!group) {
     return (
       <div>
         {header}
-        <StateScreen icon={Search} title="Aucun achat groupé pour cette annonce" description="Cet article n'est pas proposé en achat groupé pour le moment." actions={<><Button asChild size="lg"><AppLink to="/marketplace" search={{ vue: "groupes" }}>Voir les achats groupés</AppLink></Button>{product && <Button asChild size="lg" variant="outline"><AppLink to={`/produit/${product.id}`}>Voir l'annonce</AppLink></Button>}</>} />
+        <StateScreen icon={Search} title="Aucun achat groupé pour cette annonce" description={canCreate ? "Proposez un prix dégressif : plus vous avez de participants, plus le prix baisse pour tous." : "Cet article n'est pas proposé en achat groupé pour le moment."}
+          actions={<>{canCreate && <Button size="lg" onClick={() => setCreateOpen(true)}><Plus /> Créer un achat groupé</Button>}<Button asChild size="lg" variant={canCreate ? "outline" : "default"}><AppLink to="/marketplace" search={{ vue: "groupes" }}>Voir les achats groupés</AppLink></Button><Button asChild size="lg" variant="outline"><AppLink to={`/produit/${product.id}`}>Voir l'annonce</AppLink></Button></>} />
+        {canCreate && <CreateGroupBuyDialog open={createOpen} onOpenChange={setCreateOpen} product={{ id: product.id, name: product.name, price: product.price, quantity: product.quantity }} onCreated={() => void groupQuery.refetch()} />}
       </div>
     );
   }
 
-  const { price } = currentTier(group, product.price);
+  const part = participation.data;
+  const tier = currentTier(group, product.price);
+  const price = group.finalPrice ?? tier.price;
   const saving = savingPercent(price, product.price);
   const next = nextTier(group);
   const closed = group.status !== "actif";
-  const isOrganizer = session?.user.id === product.sellerId;
+  const isOrganizer = me === product.sellerId;
+  const committed = part?.status === "committed";
+  const paid = part?.status === "paid";
+  const blockedUntil = blockQuery.data && new Date(blockQuery.data).getTime() > Date.now() ? blockQuery.data : null;
+  const payOpen = group.status === "complet" && committed && !!part?.payDeadline && new Date(part.payDeadline).getTime() > Date.now();
+
+  const join = () => acts.join.mutate(group.id, {
+    onSuccess: () => toast.success("Vous avez rejoint l'achat groupé", { description: "Rien n'est débité maintenant." }),
+    onError: (e) => { toast.error("Impossible de rejoindre", { description: acts.errorText(e) }); void blockQuery.refetch(); void groupQuery.refetch(); },
+  });
+  const leave = () => acts.leave.mutate(group.id, {
+    onSuccess: () => toast.success("Vous vous êtes retiré·e du groupe", { description: "Vous ne pouvez plus rejoindre d'achat groupé pendant 48 h." }),
+    onError: (e) => toast.error("Impossible de se retirer", { description: acts.errorText(e) }),
+  });
+  const cancel = () => acts.cancel.mutate(group.id, {
+    onSuccess: () => toast.success("Achat groupé annulé", { description: "Les participants ont été prévenus. Aucun paiement n'était en jeu." }),
+    onError: (e) => toast.error("Annulation impossible", { description: acts.errorText(e) }),
+  });
 
   return (
     <div>
       {header}
       <div className="grid gap-8 lg:grid-cols-[1.05fr_1fr]">
-        <ProductGallery product={product} dimmed={closed} />
+        <ProductGallery product={product} dimmed={closed && !payOpen} />
         <div>
           <div className="flex flex-wrap items-center gap-2">
             {group.status === "actif" && <Pill tone="primary" icon={Clock}>Se termine dans {timeLeft(group.endsAt)}</Pill>}
@@ -113,7 +151,7 @@ function GroupBuyPage() {
             <span className="font-display text-3xl font-bold text-primary">{formatFcfa(price)}</span>
             {saving > 0 && <><span className="text-sm text-muted-foreground line-through">{formatFcfa(product.price)}</span><span className="rounded-full bg-success/15 px-2 py-0.5 text-xs font-bold text-[oklch(0.42_0.13_155)] dark:text-success">-{saving} %</span></>}
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">Prix par article selon le palier atteint.</p>
+          <p className="mt-1 text-xs text-muted-foreground">{group.finalPrice != null ? "Prix final par article, identique pour tous les participants." : "Prix par article selon le palier atteint."}</p>
 
           <div className="mt-5 rounded-xl border border-border bg-card p-4">
             <GroupProgress joined={group.joined} target={group.target} />
@@ -121,16 +159,32 @@ function GroupBuyPage() {
           </div>
 
           <div className="mt-5 space-y-3" aria-live="polite">
-            {group.status === "complet" && <InlineAlert tone="success" title="L'objectif est atteint">Le nombre de participants visé est atteint.</InlineAlert>}
-            {group.status === "expire" && <InlineAlert tone="neutral" title="La date limite est dépassée">Cet achat groupé est terminé.</InlineAlert>}
-            {group.status === "actif" && <InlineAlert tone="info" title="Participation bientôt disponible">L'inscription à un achat groupé n'est pas encore ouverte. Vous pouvez déjà suivre sa progression.</InlineAlert>}
+            {isOrganizer && group.status === "actif" && <InlineAlert tone="neutral" title="C'est votre achat groupé">Les participants s'engagent sans payer. À l'objectif atteint, ils paient chacun au prix final pendant 48 h ; vous êtes prévenu·e de chaque paiement.</InlineAlert>}
+            {isOrganizer && group.status === "complet" && <InlineAlert tone="success" title="Objectif atteint">Les participants ont 48 h pour payer. Les commandes payées apparaissent dans vos ventes.</InlineAlert>}
+            {!isOrganizer && group.status === "actif" && committed && <InlineAlert tone="success" title="Vous participez à cet achat groupé">Rien n'est débité maintenant. Si l'objectif est atteint, vous aurez 48 h pour payer au prix final.</InlineAlert>}
+            {!isOrganizer && group.status === "complet" && committed && payOpen && part?.payDeadline && <InlineAlert tone="warning" title="À vous de payer">Payez avant le {formatDeadline(part.payDeadline)} pour garder votre place au prix de {formatFcfa(part.unitPrice ?? price)}. Passé ce délai, votre place est libérée et vous êtes bloqué·e 48 h pour les achats groupés.</InlineAlert>}
+            {!isOrganizer && paid && <InlineAlert tone="success" title="Vous avez payé">Retrouvez votre commande dans « Mes achats ».</InlineAlert>}
+            {!isOrganizer && group.status === "complet" && !committed && !paid && <InlineAlert tone="neutral" title="L'objectif est atteint">Les inscriptions à cet achat groupé sont closes.</InlineAlert>}
+            {group.status === "expire" && <InlineAlert tone="neutral" title="La date limite est dépassée">Cet achat groupé est terminé : l'objectif n'a pas été atteint, personne n'a rien payé.</InlineAlert>}
+            {!isOrganizer && group.status === "actif" && !committed && blockedUntil && (
+              <InlineAlert tone="warning" title="Achats groupés bloqués" action={<Button size="sm" variant="outline" onClick={() => setUnblockOpen(true)}>Débloquer · {formatFcfa(UNBLOCK_FEE)}</Button>}>
+                Un engagement précédent n'a pas été tenu. Vous pourrez rejoindre à nouveau le {formatDeadline(blockedUntil)}, ou lever le blocage tout de suite.
+              </InlineAlert>
+            )}
           </div>
 
           <div className="mt-5 space-y-2.5">
-            {group.status === "actif" && <Button size="lg" className="w-full" disabled><Users /> Rejoindre le groupe</Button>}
+            {payOpen && !isOrganizer && <Button asChild size="lg" className="w-full"><AppLink to={`/produit/${product.id}/acheter`} search={{ groupe: group.id }}>Payer {formatFcfa(part?.unitPrice ?? price)}</AppLink></Button>}
+            {group.status === "actif" && !isOrganizer && !committed && !paid && (
+              !me ? <Button asChild size="lg" className="w-full"><AppLink to="/connexion"><Users /> Se connecter pour rejoindre</AppLink></Button>
+                : <Button size="lg" className="w-full" disabled={!!blockedUntil || acts.join.isPending} onClick={join}>{blockedUntil ? <Lock /> : <Users />} {acts.join.isPending ? "Inscription…" : "Rejoindre le groupe"}</Button>
+            )}
+            {!isOrganizer && committed && (group.status === "actif" || payOpen) && <Button size="lg" variant="outline" className="w-full" disabled={acts.leave.isPending} onClick={() => setLeaveOpen(true)}>Me retirer du groupe</Button>}
+            {isOrganizer && group.status === "actif" && <Button size="lg" variant="outline" className="w-full" disabled={acts.cancel.isPending} onClick={() => setCancelOpen(true)}>Annuler l'achat groupé</Button>}
             <Button asChild size="lg" variant="outline" className="w-full"><AppLink to="/marketplace" search={{ vue: "groupes" }}>Voir les autres achats groupés</AppLink></Button>
             <Button asChild variant="ghost" className="w-full"><AppLink to={`/produit/${product.id}`}>Voir l'annonce complète</AppLink></Button>
           </div>
+          {group.status === "actif" && !isOrganizer && !committed && !paid && !blockedUntil && <p className="mt-3 text-xs text-muted-foreground">Rejoindre est un engagement : si vous vous retirez ou ne payez pas dans les 48 h après l'objectif atteint, vous ne pourrez plus rejoindre d'achat groupé pendant 48 h (ou pour {formatFcfa(UNBLOCK_FEE)}).</p>}
         </div>
       </div>
 
@@ -142,6 +196,10 @@ function GroupBuyPage() {
         </section>
         <Participants group={group} isOrganizer={isOrganizer} />
       </div>
+
+      <ConfirmDialog open={leaveOpen} onOpenChange={setLeaveOpen} destructive title="Vous retirer du groupe ?" description="Votre engagement sera annulé, mais vous ne pourrez plus rejoindre d'achat groupé pendant 48 h (ou en payant 500 F pour lever le blocage)." confirmLabel="Me retirer" cancelLabel="Rester dans le groupe" onConfirm={leave} />
+      <ConfirmDialog open={cancelOpen} onOpenChange={setCancelOpen} destructive title="Annuler cet achat groupé ?" description="Les participants seront prévenus et leur engagement prend fin, sans blocage. Rien n'ayant été payé, il n'y a rien à rembourser." confirmLabel="Annuler l'achat groupé" cancelLabel="Le garder" onConfirm={cancel} />
+      <UnblockDialog open={unblockOpen} onOpenChange={setUnblockOpen} userId={me} blockedUntil={blockedUntil} />
     </div>
   );
 }

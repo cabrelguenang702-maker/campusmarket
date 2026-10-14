@@ -23,9 +23,14 @@ import { createOrder, useMyPendingOrder, useOrderActions, type Order } from "@/l
 import { usePaymentProcess } from "@/lib/api/payments";
 import { findOrCreateConversation } from "@/lib/api/engagement";
 import { friendlyError, isNetworkError } from "@/lib/api/errors";
+import { useMyParticipation } from "@/lib/api/groupbuys";
+import { formatDeadline } from "@/lib/groupbuy-model";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/_app/produit/$id/acheter")({
+  validateSearch: (s: Record<string, unknown>): { groupe?: string | undefined } => ({
+    groupe: typeof s["groupe"] === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s["groupe"]) ? s["groupe"] : undefined,
+  }),
   head: () => ({ meta: [{ title: "Finaliser votre achat — CampusMarket" }] }),
   component: CheckoutPage,
 });
@@ -37,9 +42,14 @@ const meetingPoints = ["Bibliothèque universitaire", "Cafétéria centrale", "E
 
 function CheckoutPage() {
   const { id } = Route.useParams();
+  const { groupe } = Route.useSearch();
   const { session } = useAuth();
   const userId = session?.user.id;
   const navigate = useNavigate();
+  // Paiement d'un achat groupé : quantité fixée à 1, prix = palier atteint (figé par la base), place réservée 48 h.
+  const groupMode = !!groupe;
+  const participationQuery = useMyParticipation(groupe, userId);
+  const participation = participationQuery.data;
   const productQuery = useProduct(id);
   const product = productQuery.data ?? undefined;
   const pendingQuery = useMyPendingOrder(userId, id);
@@ -82,7 +92,7 @@ function CheckoutPage() {
     <PageHeader kicker="Commande" title={stage === "commande" ? "Commande confirmée" : "Finaliser votre achat"} breadcrumbs={[{ label: "Accueil", to: "/" }, { label: "Marketplace", to: "/marketplace" }, ...(product ? [{ label: product.name, to: `/produit/${product.id}` }] : []), { label: "Commande" }]} />
   );
 
-  if (productQuery.isLoading || pendingQuery.isLoading || (pendingQuery.data && !resumed.current)) {
+  if (productQuery.isLoading || pendingQuery.isLoading || (groupMode && participationQuery.isLoading) || (pendingQuery.data && !resumed.current)) {
     return <div>{header}<div className="grid place-items-center py-16"><Spinner /></div></div>;
   }
   if (productQuery.isError) {
@@ -94,9 +104,22 @@ function CheckoutPage() {
 
   const isOwner = product.sellerId === userId;
   const buyable = product.status === "published" && product.stock !== "sold" && product.stock !== "expired" && product.stock !== "reserved" && product.quantity >= 1 && !isOwner;
+  const groupPayable = groupMode && participation?.status === "committed" && !!participation.payDeadline && new Date(participation.payDeadline).getTime() > Date.now();
   const similar = (similarQuery.data ?? []).filter((p) => p.stock === "available" || p.stock === "low").slice(0, 2);
 
-  if (!order && !buyable && stage !== "annulee") {
+  if (groupMode && !order && !groupPayable && stage !== "annulee") {
+    const already = participation?.status === "paid";
+    return (
+      <div>
+        {header}
+        <StateScreen icon={already ? CheckCircle : X} tone={already ? "success" : "neutral"} title={already ? "Vous avez déjà payé" : "Le paiement de cet achat groupé n'est pas ouvert"}
+          description={already ? "Retrouvez votre commande dans « Mes achats »." : "Le groupe n'a pas encore atteint son objectif, ou votre délai de paiement de 48 h est terminé, ou vous ne participez pas à ce groupe."}
+          actions={<>{already ? <Button asChild size="lg"><AppLink to="/profil" search={{ onglet: "achats" }}>Voir mes achats</AppLink></Button> : <Button asChild size="lg"><AppLink to={`/produit/${product.id}/achat-groupe`}>Voir l'achat groupé</AppLink></Button>}</>} />
+      </div>
+    );
+  }
+
+  if (!groupMode && !order && !buyable && stage !== "annulee") {
     return (
       <div>
         {header}
@@ -108,8 +131,8 @@ function CheckoutPage() {
     );
   }
 
-  const unit = order?.unitPrice ?? product.price;
-  const shownQty = order?.quantity ?? qty;
+  const unit = order?.unitPrice ?? (groupMode ? (participation?.unitPrice ?? product.price) : product.price);
+  const shownQty = groupMode ? 1 : (order?.quantity ?? qty);
   const summary = <OrderSummary product={product} unitPrice={unit} qty={shownQty} fee={order?.serviceFee} />;
   const orderNumber = order ? `CM-${order.id.slice(0, 8).toUpperCase()}` : "";
   const total = order?.total ?? shownQty * unit + Math.round(shownQty * unit * 0.02);
@@ -120,7 +143,7 @@ function CheckoutPage() {
     if (!userId) return;
     setCreating(true);
     try {
-      const created = await createOrder({ userId, productId: product.id, quantity: qty, meetingPoint: meeting, note, idempotencyKey: keyRef.current });
+      const created = await createOrder({ userId, productId: product.id, quantity: groupMode ? 1 : qty, meetingPoint: meeting, note, idempotencyKey: keyRef.current, groupPurchaseId: groupe });
       setOrder(created);
       setStage("paiement");
     } catch (e) {
@@ -154,8 +177,8 @@ function CheckoutPage() {
     return (
       <div>
         {header}
-        <StateScreen icon={X} tone="neutral" title="Commande annulée" description="Votre commande a été annulée. Aucun montant n'a été débité. L'article reste disponible tant qu'il n'est pas acheté."
-          actions={<><Button size="lg" onClick={() => { setStage("recap"); void productQuery.refetch(); }}>Reprendre la commande</Button><Button asChild size="lg" variant="outline"><AppLink to={`/produit/${product.id}`}>Retour à l'annonce</AppLink></Button></>} />
+        <StateScreen icon={X} tone="neutral" title="Commande annulée" description={groupMode ? "Vous vous êtes retiré·e de l'achat groupé. Aucun montant n'a été débité ; vous ne pouvez plus rejoindre d'achat groupé pendant 48 h." : "Votre commande a été annulée. Aucun montant n'a été débité. L'article reste disponible tant qu'il n'est pas acheté."}
+          actions={<>{!groupMode && <Button size="lg" onClick={() => { setStage("recap"); void productQuery.refetch(); }}>Reprendre la commande</Button>}<Button asChild size="lg" variant={groupMode ? "default" : "outline"}><AppLink to={groupMode ? `/produit/${product.id}/achat-groupe` : `/produit/${product.id}`}>{groupMode ? "Voir l'achat groupé" : "Retour à l'annonce"}</AppLink></Button></>} />
       </div>
     );
   }
@@ -193,8 +216,10 @@ function CheckoutPage() {
             <div>
               <h2 className="font-display text-lg font-bold">Récapitulatif de votre commande</h2>
               <div className="mt-4 rounded-xl border border-border bg-card p-4">
-                <div className="flex items-center justify-between gap-3"><div className="min-w-0"><p className="truncate font-semibold">{product.name}</p><LocationBadge campus={product.campus} city={product.city} className="mt-1" /></div><p className="shrink-0 font-display font-bold text-primary">{formatFcfa(product.price)}</p></div>
-                <div className="mt-4 flex items-center justify-between border-t border-border pt-4 text-sm"><span className="text-muted-foreground">Quantité{product.quantity > 1 ? ` (${product.quantity} disponibles)` : ""}</span><QuantityStepper value={qty} max={Math.min(product.quantity, 5)} onChange={setQty} /></div>
+                <div className="flex items-center justify-between gap-3"><div className="min-w-0"><p className="truncate font-semibold">{product.name}</p><LocationBadge campus={product.campus} city={product.city} className="mt-1" /></div><p className="shrink-0 font-display font-bold text-primary">{formatFcfa(unit)}</p></div>
+                {groupMode
+                  ? <div className="mt-4 flex items-center justify-between border-t border-border pt-4 text-sm"><span className="text-muted-foreground">Achat groupé · prix du palier atteint</span><span className="font-semibold">1 article</span></div>
+                  : <div className="mt-4 flex items-center justify-between border-t border-border pt-4 text-sm"><span className="text-muted-foreground">Quantité{product.quantity > 1 ? ` (${product.quantity} disponibles)` : ""}</span><QuantityStepper value={qty} max={Math.min(product.quantity, 5)} onChange={setQty} /></div>}
               </div>
               <div className="mt-4 flex items-start gap-3 rounded-xl border border-border bg-card p-4 text-sm"><Handshake className="mt-0.5 size-5 shrink-0 text-primary" /><div><p className="font-semibold">Remise en main propre</p><p className="mt-0.5 text-muted-foreground">Vous convenez du lieu et de l'heure avec {product.sellerName} sur le campus {product.campus}.</p></div></div>
               <Button size="lg" className="mt-6 w-full" onClick={() => setStage("infos")}>Continuer <ArrowRight /></Button>
@@ -217,7 +242,7 @@ function CheckoutPage() {
                 </Field>
                 <Field label="Message au vendeur (facultatif)" htmlFor="co-note"><Textarea id="co-note" className="min-h-20" maxLength={500} placeholder="Bonjour, je suis disponible en fin d'après-midi." value={note} onChange={(e) => setNote(e.target.value)} /></Field>
               </div>
-              <p className="mt-4 text-xs text-muted-foreground">En continuant, l'article est réservé pour vous pendant 30 minutes le temps du paiement.</p>
+              <p className="mt-4 text-xs text-muted-foreground">{groupMode && participation?.payDeadline ? `Votre place est réservée jusqu'au ${formatDeadline(participation.payDeadline)}.` : "En continuant, l'article est réservé pour vous pendant 30 minutes le temps du paiement."}</p>
               <div className="mt-4 grid grid-cols-[auto_1fr] gap-2.5"><Button size="lg" variant="outline" disabled={creating} onClick={() => setStage("recap")}><ArrowLeft /> Retour</Button><Button size="lg" disabled={creating} onClick={() => void goPayment()}>{creating ? "Réservation…" : "Continuer vers le paiement"} {!creating && <ArrowRight />}</Button></div>
             </div>
           )}
@@ -235,7 +260,7 @@ function CheckoutPage() {
         <div className="lg:sticky lg:top-24 lg:self-start">{summary}</div>
       </div>
 
-      <ConfirmDialog open={cancelOpen} onOpenChange={setCancelOpen} destructive title="Annuler la commande ?" description="Votre réservation sera libérée. Aucun montant n'a été débité." confirmLabel="Annuler la commande" cancelLabel="Continuer l'achat" onConfirm={cancelOrder} />
+      <ConfirmDialog open={cancelOpen} onOpenChange={setCancelOpen} destructive title={groupMode ? "Vous retirer de l'achat groupé ?" : "Annuler la commande ?"} description={groupMode ? "Votre place sera libérée et vous ne pourrez plus rejoindre d'achat groupé pendant 48 h (ou en payant 500 F). Aucun montant n'a été débité." : "Votre réservation sera libérée. Aucun montant n'a été débité."} confirmLabel={groupMode ? "Me retirer" : "Annuler la commande"} cancelLabel="Continuer l'achat" onConfirm={cancelOrder} />
     </div>
   );
 }

@@ -11,6 +11,8 @@ export type GroupBuy = {
   endsAt: string;
   status: GroupBuyStatus;
   tiers: GroupBuyTier[];
+  /** Prix final figé quand l'objectif est atteint (palier atteint, identique pour tous) ; null tant que le groupe est actif. */
+  finalPrice: number | null;
 };
 
 type Row = { status: "active" | "reached" | "expired" | "cancelled"; ends_at: string };
@@ -45,3 +47,12 @@ export function timeLeft(endsAt: string, now = Date.now()): string {
   if (h > 0) return `${h} h ${String(m).padStart(2, "0")}`;
   return `${Math.max(1, m)} min`;
 }
+
+/** Participation de la personne connectée : « committed » = engagée, à payer avant l'échéance ; « paid » = payée. */
+export type MyParticipation = { status: "committed" | "paid" | "withdrawn" | "expired"; unitPrice: number | null; payDeadline: string | null };
+
+/** « 14 oct. à 18:30 » : échéance de paiement lisible. */
+export const formatDeadline = (iso: string) => {
+  const d = new Date(iso);
+  return `${d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} à ${d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`;
+};

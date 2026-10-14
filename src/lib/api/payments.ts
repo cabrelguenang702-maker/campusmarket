@@ -8,7 +8,7 @@ import { invokeFunction } from "./functions";
 
 export type PaymentState = "choix" | "mobile" | "attente" | "confirme" | "echec" | "expire";
 export type PaymentMethod = "mtn" | "orange";
-export type PaymentKind = "order" | "course" | "event";
+export type PaymentKind = "order" | "course" | "event" | "unblock";
 
 /** Même table de préfixes que supabase/functions/_shared/campay.ts. */
 export function operatorOf(nationalNumber: string): PaymentMethod | null {
@@ -38,6 +38,7 @@ const ERRORS: Record<string, string> = {
   event_not_found: "Événement introuvable ou non publié.",
   event_ended: "Cet événement est terminé : les inscriptions sont closes.",
   sold_out: "Il n'y a plus de place pour cet événement.",
+  not_blocked: "Vous n'êtes pas bloqué : vous pouvez rejoindre un achat groupé.",
   account_not_active: "Votre compte ne permet pas cette action pour le moment.",
   too_many_attempts: "Trop de tentatives pour cette commande. Contactez le support.",
   provider_error: "L'opérateur n'a pas répondu. Aucun montant n'a été débité, réessayez dans un instant.",
@@ -111,6 +112,7 @@ export function usePaymentProcess(opts: { kind: PaymentKind; targetId: string | 
     const phone_number = `+237${national}`;
     const [fn, body] = kind === "order" ? ["payments-initiate", { order_id: targetId, phone_number, idempotency_key: key }]
       : kind === "course" ? ["course-checkout-initiate", { course_id: targetId, phone_number, idempotency_key: key }]
+      : kind === "unblock" ? ["group-unblock-initiate", { phone_number, idempotency_key: key }]
       : ["event-checkout-initiate", { event_id: targetId, phone_number, idempotency_key: key }];
     const res = await invokeFunction<{ attempt_id: string; status: string }>(fn, body);
     setBusy(false);

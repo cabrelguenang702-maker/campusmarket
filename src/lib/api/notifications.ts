@@ -46,8 +46,10 @@ export function describe(r: Pick<Row, "type" | "category" | "target_id" | "paylo
     case "product_available": return { title: "De nouveau disponible", body: `${str(p["name"]) ?? "Un article"} que vous suiviez est disponible.`, to: id ? `/produit/${id}` : "/marketplace" };
     case "wanted_match": return { title: "Une annonce correspond à votre demande", body: str(p["name"]) ?? "Un vendeur vient de publier un article qui correspond.", to: id ? `/produit/${id}` : "/je-recherche" };
     case "product_removed": return { title: "Annonce retirée", body: "L'une de vos annonces a été retirée par la modération.", to: "/profil?onglet=annonces" };
-    case "group_purchase_reached": return { title: "Achat groupé validé", body: "Le seuil est atteint : l'achat groupé est confirmé.", to: "/groupes" };
-    case "group_purchase_cancelled": return { title: "Achat groupé annulé", body: "L'achat groupé n'a pas atteint son seuil à temps.", to: "/groupes" };
+    case "group_purchase_reached": return { title: "Objectif atteint : à vous de payer", body: "L\'achat groupé a atteint son objectif. Vous avez 48 h pour payer au prix final et garder votre place.", to: str(p["product_id"]) ? `/produit/${str(p["product_id"])}/achat-groupe` : "/marketplace?vue=groupes" };
+    case "group_purchase_cancelled": return { title: "Achat groupé terminé", body: "L\'achat groupé s\'est terminé sans aboutir (objectif non atteint, annulation ou stock épuisé). Rien n\'a été débité.", to: str(p["product_id"]) ? `/produit/${str(p["product_id"])}/achat-groupe` : "/marketplace?vue=groupes" };
+    case "group_buy_blocked": return { title: "Achats groupés bloqués 48 h", body: "Un engagement n\'a pas été tenu. Vous pourrez rejoindre à nouveau un achat groupé dans 48 h, ou lever le blocage pour 500 F.", to: "/marketplace?vue=groupes" };
+    case "group_buy_unblocked": return { title: "Blocage levé", body: "Votre paiement est confirmé : vous pouvez de nouveau rejoindre des achats groupés.", to: "/marketplace?vue=groupes" };
     case "space_invitation": return { title: "Invitation", body: `${who} vous invite à rejoindre un espace.`, to: "/communautes" };
     case "membership_requested": return { title: "Demande d'adhésion", body: `${who} souhaite rejoindre votre espace.`, to: "/communautes" };
     case "membership_approved": return { title: "Adhésion acceptée", body: "Votre demande d'adhésion a été acceptée.", to: "/communautes" };

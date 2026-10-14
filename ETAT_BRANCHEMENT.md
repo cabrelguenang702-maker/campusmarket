@@ -1,4 +1,4 @@
-# CampusMarket — état du branchement front ↔ Supabase (livraison intermédiaire v24)
+# CampusMarket — état du branchement front ↔ Supabase (livraison intermédiaire v25)
 
 Cette livraison est un **point d'étape**, pas la version finale : une partie des écrans lit et écrit dans Supabase, le reste
 tourne encore sur des données de démonstration (mocks). **Rien n'a été compilé** (pas de réseau dans l'environnement de
@@ -7,7 +7,7 @@ puis corriger les erreurs de types éventuelles. `src/routeTree.gen.ts` se rég�
 (des routes ont été ajoutées, par exemple `/admin/securite`).
 
 ## Base de données (projet Supabase kxkxrephkyfpcuanlxen)
-Migrations 0001–0021 d'origine + **0022 à 0051 ajoutées ici, déjà appliquées** sur le projet et testées avec de vrais rôles
+Migrations 0001–0021 d'origine + **0022 à 0052 ajoutées ici, déjà appliquées** sur le projet et testées avec de vrais rôles
 (`set role authenticated` + JWT simulé). Pour un nouveau projet, les rejouer dans l'ordre.
 
 | N° | Contenu |
@@ -40,6 +40,7 @@ Migrations 0001–0021 d'origine + **0022 à 0051 ajoutées ici, déjà appliqu�
 | 0049 | Le vendeur organisateur voit la liste de ses participants |
 | 0050 | Événements : cinq catégories (table vide), `events.program`, **impasse corrigée** (une personne dont le paiement avait expiré ou qui avait annulé son billet ne pouvait plus JAMAIS se réinscrire : unicité limitée aux billets actifs), plus de billet sur un événement terminé, l'organisateur ne peut plus fausser `tickets_sold`, baisser la capacité sous les places prises, changer le prix une fois des billets émis ni rouvrir un événement annulé |
 | 0051 | **Aide et support** : consigne ce qui avait été appliqué sur le projet sans fichier (garde de `enforce_ticket_immutability`, `create_support_ticket`, les 20 questions de la FAQ) ; **nouveau** : limite de 30 messages / heure par demandeur (les messages de ticket n'avaient aucune limite), pièce jointe obligatoirement dans le dossier de son ticket, réponse FAQ « Publier une annonce » corrigée (l'annonce passe par la modération) |
+| 0052 | **Achats groupés** : participation sans paiement (`join_group_purchase`), retrait (`leave_group_purchase`), création validée côté base (`create_group_purchase` : stock ≥ objectif, 1 à 5 paliers strictement décroissants sous le prix de l'annonce, échéance 1 h à 30 jours ; l'insertion directe est refusée), passage en phase de paiement à l'objectif atteint (prix final figé, place réservée 48 h pour chaque participant), commande au prix du palier (`orders.group_purchase_id`, prix imposé par la base), blocage de 48 h (`group_buy_blocks`) pour qui se retire ou ne paie pas, déblocage à 500 F (`group_buy_unblocks`, nouvelle cible de `payments`), tâche planifiée `process_group_purchases` toutes les 10 min |
 
 ## Écrans branchés sur la base
 Marketplace (filtres, tri, pagination), fiche produit (offres, alerte, signalement, contact, vues), publication et
@@ -52,11 +53,11 @@ vérifié / refusé avec motif), **paramètres** (apparence, mot de passe, appar
 appareils, utilisateurs bloqués), **formations** (catalogue, filtres, fiche, inscription gratuite, paiement des formations payantes,
 lecteurs vidéo/PDF/article, progression, avis, certificat), **événements** (liste, fiche, création, billet gratuit, billet payant, billet électronique à QR code réel, contrôle d'entrée par caméra ou saisie, onglet du profil), **communautés et groupes** (listes, recherche, création, détail, rejoindre /
 demander / quitter, publications avec image, réactions, commentaires, épinglage, suppression, signalement, membres, rôles, demandes
-d'adhésion, onglets « Mes communautés / Mes groupes » du profil), **aide et support** (FAQ publique, création de ticket avec capture, conversation, pièces jointes, fermeture), **universités** (annuaire avec recherche et filtres région / pays / ville, fiche d'une
+d'adhésion, onglets « Mes communautés / Mes groupes » du profil), **aide et support** (FAQ publique, création de ticket avec capture, conversation, pièces jointes, fermeture), **achats groupés** (rejoindre, se retirer, payer au prix du palier, créer, annuler, déblocage), **universités** (annuaire avec recherche et filtres région / pays / ville, fiche d'une
 université avec ses annonces et ses événements à venir).
 
 ## Encore sur des données de démonstration
-Achats groupés (participation, paiement, création, clôture), onboarding/inscription (paiement), tout le back-office admin (dont l'écran support du personnel, `/admin/support`, qui lit encore `mock-support`).
+Onboarding/inscription (paiement), tout le back-office admin (dont l'écran support du personnel, `/admin/support`, qui lit encore `mock-support`).
 
 ## Aide et support (v24)
 - **FAQ** : lue en base (`faq_categories`, `faq_items`), visible sans connexion, recherche et filtre par catégorie côté navigateur. Le contenu se gère en base (écran admin à venir).
@@ -90,13 +91,17 @@ Achats groupés (participation, paiement, création, clôture), onboarding/inscr
 - Retiré : affiche (la table n'a pas de colonne image), « Télécharger » le billet (remplacé par « Imprimer »).
 - Les fichiers `lib/mock-events.ts` ne servent plus qu'aux écrans Universités et Admin.
 
-## Achats groupés — étape 1 : lecture (v21)
-- **Branché** : onglet « Achats groupés » de la marketplace et page `/produit/<id>/achat-groupe` (progression, palier courant, prochains
-  paliers, échéance, statut, participants visibles seulement des participants et du vendeur).
-- **Pas encore possible** : rejoindre, payer, créer un achat groupé, clôturer à l'échéance. Le bouton « Rejoindre » est volontairement désactivé.
-- **Pourquoi** : le paiement CamPay du projet sait ENCAISSER (`collect`) mais pas REMBOURSER ; or l'ancien écran promettait un
-  remboursement automatique de la différence de palier et un remboursement intégral si l'objectif n'est pas atteint. Rien dans le projet
-  ne peut tenir cette promesse. Décision attendue (voir le message de livraison) avant de brancher la participation.
+## Achats groupés (v25)
+- **Rejoindre** = s'engager au prix du palier courant, **sans payer** : rien n'est débité, donc rien à rembourser (le paiement CamPay ne sait qu'encaisser).
+- **Objectif atteint** : le groupe passe en « atteint », le prix final (palier atteint) est figé et identique pour tous ; chaque participant est notifié, sa place est réservée **48 h**, et il paie par une commande normale (`/produit/<id>/acheter?groupe=<id>`, quantité 1, prix imposé par la base).
+- **Échéance sans objectif**, annulation par le vendeur ou annonce retirée : le groupe se clôt, personne n'a rien payé, aucun blocage. Un participant dont la place ne peut plus être réservée (stock pris entre-temps par un achat classique) est libéré sans blocage.
+- **Blocage de 48 h** : qui se retire (même avant l'objectif), annule sa commande de groupe ou ne paie pas dans les 48 h ne peut plus **rejoindre un achat groupé** pendant 48 h. Les achats classiques ne sont pas concernés. **Lever le blocage : 500 F** par Mobile Money (Edge Function `group-unblock-initiate`, même circuit CamPay ; le montant vient de la base).
+  À confirmer : le blocage vise les achats groupés, pas tout le compte (une seule ligne à changer dans `join_group_purchase` pour l'étendre).
+- **Créer** : depuis la page `/produit/<id>/achat-groupe` du vendeur (lien « Proposer en achat groupé » sur la fiche). **Annuler** : tant que le groupe est actif.
+- Un participant qui a payé ne peut plus se retirer (aucun remboursement automatique) : il passe par le support.
+- La page de paiement d'un achat groupé n'affiche pas l'ancien « 30 minutes » : la réservation dure jusqu'à l'échéance de 48 h.
+- **Testé en base avec de vrais rôles** : création refusée (palier ≥ prix, objectif > stock, insertion directe), vendeur et doublon refusés, objectif atteint → prix final 8 000 F + 3 réservations, commande au prix du palier malgré un prix truqué côté client (8 160 F frais compris), non-participant refusé, payé non retirable, retrait → blocage 48 h, délai dépassé → expiré + blocage, paiement de 500 F → blocage levé, groupe sans objectif → expiré sans blocage.
+- **Non testé** : le front (non compilé), l'Edge Function `group-unblock-initiate` (déployée ; la copie déployée embarque `cors.ts` et `campay.ts` à plat alors que le dépôt les importe depuis `../_shared`, comme les autres fonctions) et le paiement CamPay réel.
 
 ## Communautés et groupes (v20)
 - Un seul code pour les deux (`components/community/SpacePages.tsx`), les six routes sont de fines enveloppes. `kind` = communaute | groupe.
@@ -144,6 +149,7 @@ Achats groupés (participation, paiement, création, clôture), onboarding/inscr
 - `record_login` est appelé à la connexion (après le code si 2FA) ; la détection de « nouvel appareil » n'envoie pas encore de notification.
 
 ## À savoir avant de tester
+- **Vercel refusait `npm install`** (faille XSS dans `@tanstack/start-server-core` 1.169.17, imposée en version exacte par `@tanstack/react-start`) : `package.json` force désormais `~1.169.39` via `overrides` et l'entrée verrouillée a été retirée de `package-lock.json` pour que npm la résolve de nouveau. Non rejoué ici (pas d'accès au registre) : si Vercel bloque encore, lancer `npm update @tanstack/react-start @tanstack/react-router @tanstack/router-plugin` puis valider `package-lock.json`. `bun.lock` n'a pas été touché.
 - Les avatars déjà envoyés dans l'ancien bucket privé ne s'afficheront pas : aucun n'existait (l'envoi n'était pas branché).
 - **Les annonces publiées passent par la modération** : statut `pending_review` ; un admin doit les valider.
 - **Frais de service 2 %** repris de la maquette (`order_service_fee`, migration 0034) : à confirmer.

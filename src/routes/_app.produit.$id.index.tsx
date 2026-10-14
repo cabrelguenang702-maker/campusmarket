@@ -176,6 +176,7 @@ function ProductPage() {
           <div className="mt-5 space-y-3" aria-live="polite">
             {isOwner && state === "revue" && <InlineAlert tone="warning" title="Annonce en cours de revue">Votre annonce sera visible par les acheteurs dès qu'un modérateur l'aura validée.</InlineAlert>}
             {isOwner && state !== "revue" && <InlineAlert tone="neutral" title="Ceci est votre annonce">Vous la voyez comme les acheteurs. Gérez-la depuis « Mes annonces ».</InlineAlert>}
+            {isOwner && state === "disponible" && <Button asChild variant="outline" className="w-full"><AppLink to={`/produit/${product.id}/achat-groupe`}>Proposer en achat groupé</AppLink></Button>}
             {!isOwner && counter && (
               <InlineAlert tone="primary" title={`Le vendeur vous propose ${formatFcfa(counter.counterAmount ?? 0)}`}>
                 Contre-proposition suite à votre offre de {formatFcfa(counter.amount)}.

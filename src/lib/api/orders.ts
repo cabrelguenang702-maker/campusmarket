@@ -95,7 +95,7 @@ export async function fetchMyPendingOrder(userId: string, productId: string): Pr
   return data ? map(data as unknown as Row, userId) : null;
 }
 
-export async function createOrder(input: { userId: string; productId: string; quantity: number; meetingPoint: string; note: string; idempotencyKey: string }): Promise<Order> {
+export async function createOrder(input: { userId: string; productId: string; quantity: number; meetingPoint: string; note: string; idempotencyKey: string; groupPurchaseId?: string | undefined }): Promise<Order> {
   const sb = requireSupabase();
   // seller_id, unit_price, service_fee, total_amount, reservation_id : valeurs provisoires, remplacées par la base.
   const { data, error } = await sb
@@ -104,6 +104,7 @@ export async function createOrder(input: { userId: string; productId: string; qu
       idempotency_key: input.idempotencyKey, product_id: input.productId, buyer_id: input.userId, seller_id: input.userId,
       quantity: input.quantity, unit_price: 0, total_amount: 0, status: "pending_payment",
       meeting_point: input.meetingPoint || null, buyer_note: input.note.trim() || null,
+      ...(input.groupPurchaseId ? { group_purchase_id: input.groupPurchaseId } : {}),
     })
     .select("id")
     .single();
