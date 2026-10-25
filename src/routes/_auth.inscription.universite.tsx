@@ -10,7 +10,7 @@ import { NetworkErrorScreen } from "@/components/cm/screens";
 import { suggestUniversity, useUniversities, type University } from "@/lib/api/geo";
 import { setOwnUniversity } from "@/lib/api/profile";
 import { RequireSession, useAuth } from "@/lib/auth";
-import { REGISTRATION_PAYMENT_ENABLED } from "@/lib/config";
+import { fetchMyRegistration } from "@/lib/api/registration";
 import { useOnboarding } from "@/lib/onboarding";
 
 export const Route = createFileRoute("/_auth/inscription/universite")({
@@ -51,9 +51,9 @@ function UniversityPage() {
     try {
       await setOwnUniversity(userId, university);
       await refreshAccount();
-      void navigate({
-        to: REGISTRATION_PAYMENT_ENABLED ? "/inscription/paiement" : "/inscription/compte-cree",
-      });
+      // C'est la base qui décide : paiement demandé seulement si l'inscription payante est active et que ce compte doit payer.
+      const registration = await fetchMyRegistration().catch(() => null);
+      void navigate({ to: registration?.status === "pending_payment" ? "/inscription/paiement" : "/inscription/compte-cree" });
     } catch (error) {
       console.error("Enregistrement de l'université impossible", error);
       setSaveError(true);

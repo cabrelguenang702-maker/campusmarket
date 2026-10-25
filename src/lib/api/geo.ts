@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getSupabase, requireSupabase } from "../supabase";
 
-/** Mêmes formes que les types de maquette (mock-data.ts) : les écrans existants n'ont pas à changer. */
+/** Pays et universités tels que la base les renvoie. */
 export type Country = {
   code: string;
   name: string;

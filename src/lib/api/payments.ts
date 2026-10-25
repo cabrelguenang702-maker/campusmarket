@@ -8,7 +8,7 @@ import { invokeFunction } from "./functions";
 
 export type PaymentState = "choix" | "mobile" | "attente" | "confirme" | "echec" | "expire";
 export type PaymentMethod = "mtn" | "orange";
-export type PaymentKind = "order" | "course" | "event" | "unblock";
+export type PaymentKind = "order" | "course" | "event" | "unblock" | "tutoring" | "subscription" | "registration";
 
 /** Même table de préfixes que supabase/functions/_shared/campay.ts. */
 export function operatorOf(nationalNumber: string): PaymentMethod | null {
@@ -40,6 +40,12 @@ const ERRORS: Record<string, string> = {
   sold_out: "Il n'y a plus de place pour cet événement.",
   not_blocked: "Vous n'êtes pas bloqué : vous pouvez rejoindre un achat groupé.",
   account_not_active: "Votre compte ne permet pas cette action pour le moment.",
+  request_not_found: "Demande introuvable.",
+  not_payable: "Cette demande ne peut plus être payée.",
+  payment_deadline_passed: "Le délai de paiement est dépassé : la séance a été annulée.",
+  plan_unavailable: "Cette formule n'est plus proposée.",
+  registration_not_found: "Inscription introuvable.",
+  phone_not_verified: "Vérifiez d'abord votre numéro de téléphone pour connaître le tarif de votre pays.",
   too_many_attempts: "Trop de tentatives pour cette commande. Contactez le support.",
   provider_error: "L'opérateur n'a pas répondu. Aucun montant n'a été débité, réessayez dans un instant.",
   unauthorized: "Votre session a expiré. Reconnectez-vous.",
@@ -110,10 +116,14 @@ export function usePaymentProcess(opts: { kind: PaymentKind; targetId: string | 
     setBusy(true);
     const key = keyRef.current;
     const phone_number = `+237${national}`;
-    const [fn, body] = kind === "order" ? ["payments-initiate", { order_id: targetId, phone_number, idempotency_key: key }]
-      : kind === "course" ? ["course-checkout-initiate", { course_id: targetId, phone_number, idempotency_key: key }]
-      : kind === "unblock" ? ["group-unblock-initiate", { phone_number, idempotency_key: key }]
-      : ["event-checkout-initiate", { event_id: targetId, phone_number, idempotency_key: key }];
+    const common = { phone_number, idempotency_key: key };
+    const [fn, body]: [string, Record<string, unknown>] = kind === "order" ? ["payments-initiate", { order_id: targetId, ...common }]
+      : kind === "course" ? ["course-checkout-initiate", { course_id: targetId, ...common }]
+      : kind === "unblock" ? ["group-unblock-initiate", common]
+      : kind === "tutoring" ? ["tutoring-checkout-initiate", { request_id: targetId, ...common }]
+      : kind === "subscription" ? ["subscription-checkout-initiate", { plan_id: targetId, ...common }]
+      : kind === "registration" ? ["registration-checkout-initiate", common]
+      : ["event-checkout-initiate", { event_id: targetId, ...common }];
     const res = await invokeFunction<{ attempt_id: string; status: string }>(fn, body);
     setBusy(false);
 

@@ -3,7 +3,6 @@ import type { IconType } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { ArrowLeft } from "@/components/icons";
 import { AppLink } from "@/components/cm/app-link";
-import { StateSwitcher } from "@/components/cm/state-switcher";
 import { SIGNUP_STEP_COUNT } from "@/lib/config";
 
 export const SIGNUP_STEPS = SIGNUP_STEP_COUNT;
@@ -22,25 +21,21 @@ export function StepProgress({ step, total = SIGNUP_STEPS }: { step: number; tot
   );
 }
 
-type Props<T extends string> = {
+type Props = {
   title: string;
   description?: string | undefined;
   step?: number | undefined;
   back?: string | undefined;
   icon?: ReactNode;
-  states?: readonly { id: T; label: string }[];
-  state?: T;
-  onStateChange?: (s: T) => void;
   children: ReactNode;
   footer?: ReactNode;
   className?: string | undefined;
 };
 
 /** Gabarit d'un écran d'authentification : retour, progression, titre, contenu, pied de page. */
-export function AuthPage<T extends string>({ title, description, step, back, icon, states, state, onStateChange, children, footer, className }: Props<T>) {
+export function AuthPage({ title, description, step, back, icon, children, footer, className }: Props) {
   return (
     <div className={cn("fade-up flex flex-1 flex-col", className)}>
-      {states && state !== undefined && onStateChange && <StateSwitcher states={states} value={state} onChange={onStateChange} />}
       {(back || step) && (
         <div className="mb-6 space-y-4">
           {back && (

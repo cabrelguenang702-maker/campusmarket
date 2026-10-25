@@ -8,7 +8,8 @@ import { Pill } from "@/components/cm/badges";
 import { ConfirmDialog, Spinner, StateScreen } from "@/components/cm/feedback";
 import { NetworkErrorScreen, NoResultsScreen, ServerErrorScreen } from "@/components/cm/screens";
 import { AppLink } from "@/components/cm/app-link";
-import { Check, Crown, MoreVertical, Search, Shield, UserMinus, UserX, X } from "@/components/icons";
+import { Check, Crown, MoreVertical, Plus, Search, Shield, UserMinus, UserX, X } from "@/components/icons";
+import { InvitePeopleDialog } from "@/components/community/InvitePeopleDialog";
 import { cn } from "@/lib/utils";
 import { friendlyError, isNetworkError } from "@/lib/api/errors";
 import { useJoinRequests, useMemberActions, useSpaceMembers, type SpaceMember } from "@/lib/api/spaces";
@@ -65,6 +66,7 @@ export function MembersList({ space, myStatus }: { space: Space; myStatus: MySta
   const [q, setQ] = useState("");
   const [tab, setTab] = useState<"tous" | "responsables">("tous");
   const [confirm, setConfirm] = useState<{ id: string; name: string } | null>(null);
+  const [inviteOpen, setInviteOpen] = useState(false);
 
   if (query.isPending) return <div className="grid place-items-center py-12"><Spinner className="size-6" /></div>;
   if (query.isError) return isNetworkError(query.error) ? <NetworkErrorScreen compact onRetry={() => void query.refetch()} /> : <ServerErrorScreen compact onRetry={() => void query.refetch()} />;
@@ -78,6 +80,7 @@ export function MembersList({ space, myStatus }: { space: Space; myStatus: MySta
 
   return (
     <div>
+      {canAdminister(myStatus) && <div className="mb-4 flex justify-end"><Button onClick={() => setInviteOpen(true)}><Plus /> Inviter des personnes</Button></div>}
       {canAdminister(myStatus) && <RequestsPanel spaceId={space.id} />}
       <SearchField placeholder="Rechercher un membre" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Rechercher un membre" />
       <div className="mt-4 flex gap-1.5" role="tablist" aria-label="Filtrer les membres">
@@ -95,6 +98,7 @@ export function MembersList({ space, myStatus }: { space: Space; myStatus: MySta
         {list.length === 0 ? <NoResultsScreen compact query={q} /> : <ul className="space-y-2">{(tab === "tous" && !q ? list.filter((m) => m.role === "member") : list).map(row)}</ul>}
       </div>
 
+      <InvitePeopleDialog space={space} memberIds={new Set(members.map((m) => m.userId))} open={inviteOpen} onOpenChange={setInviteOpen} />
       <ConfirmDialog open={!!confirm} onOpenChange={(o) => !o && setConfirm(null)} destructive title={`Exclure ${confirm?.name ?? ""} ?`} description="Cette personne ne fera plus partie de l'espace. Elle pourra demander à le rejoindre à nouveau." confirmLabel="Exclure"
         onConfirm={() => { if (confirm) actions.remove.mutate(confirm.id, { onSuccess: () => toast.success(`${confirm.name} a été exclu·e`), onError: (e) => toast.error("Exclusion impossible", { description: friendlyError(e) }) }); }} />
     </div>

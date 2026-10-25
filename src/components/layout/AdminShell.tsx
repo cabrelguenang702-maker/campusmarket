@@ -6,21 +6,27 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Logo } from "@/components/cm/brand";
 import { AppLink } from "@/components/cm/app-link";
 import { UserMenu, ThemeToggle, NotificationsMenu } from "@/components/layout/AppShell";
+import { useAuth } from "@/lib/auth";
 import {
-  BarChart, Buildings, Flag, Globe2, Home, LayoutDashboard, LifeBuoy, Menu, ShieldCheck, Sliders, Store, Users,
+  BarChart, Briefcase, Buildings, Flag, Globe2, Home, LayoutDashboard, LifeBuoy, Menu, ShieldCheck, Sliders, Store, Users, Wallet,
 } from "@/components/icons";
 
-const adminNav = [
+/** `finance` : entrée visible des administrateurs et du responsable financier seulement (la base décide de toute façon). */
+type AdminNavItem = { label: string; to: string; icon: typeof Users; finance?: boolean };
+const adminNav: readonly AdminNavItem[] = [
   { label: "Tableau de bord", to: "/admin", icon: LayoutDashboard },
   { label: "Utilisateurs", to: "/admin/utilisateurs", icon: Users },
   { label: "Annonces", to: "/admin/annonces", icon: Store },
   { label: "Universités", to: "/admin/universites", icon: Buildings },
+  { label: "Litiges", to: "/admin/litiges", icon: Flag },
+  { label: "Campus Jobs", to: "/admin/emplois", icon: Briefcase },
   { label: "Géographie", to: "/admin/geographie", icon: Globe2 },
   { label: "Statistiques", to: "/admin/statistiques", icon: BarChart },
+  { label: "Finances", to: "/admin/finances", icon: Wallet, finance: true },
   { label: "Support", to: "/admin/support", icon: LifeBuoy },
   { label: "Paramètres", to: "/admin/parametres", icon: Sliders },
   { label: "Sécurité", to: "/admin/securite", icon: ShieldCheck },
-] as const;
+];
 
 function useIsActive() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -29,9 +35,11 @@ function useIsActive() {
 
 function NavList({ onNavigate }: { onNavigate?: (() => void) | undefined }) {
   const isActive = useIsActive();
+  const { roles } = useAuth();
+  const canSeeFinance = roles.includes("admin") || roles.includes("super_admin") || roles.includes("financial_manager");
   return (
     <ul className="space-y-0.5">
-      {adminNav.map(({ label, to, icon: Icon }) => {
+      {adminNav.filter((item) => !item.finance || canSeeFinance).map(({ label, to, icon: Icon }) => {
         const active = isActive(to);
         return (
           <li key={label}>

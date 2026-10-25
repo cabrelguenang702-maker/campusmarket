@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { BadgeCheck, Check, Flag, MessageCircle, Package, Search, Share, UserPlus } from "@/components/icons";
+import { BadgeCheck, Check, Flag, MessageCircle, Package, Search, Share, Star, UserPlus } from "@/components/icons";
 import { AppLink } from "@/components/cm/app-link";
 import { RatingStars, VerificationBadge } from "@/components/cm/badges";
 import { Avatar, ProductCard, ProductCardSkeleton } from "@/components/cm/commerce";
@@ -13,6 +13,7 @@ import { ReportDialog } from "@/components/cm/ReportDialog";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { setFollowing, useIsFollowing, useSeller, useSellerListings, useSellerRatingDistribution, useSellerReviews } from "@/lib/api/products";
 import { findOrCreateConversation } from "@/lib/api/engagement";
+import { useIsPremiumSeller } from "@/lib/api/premium";
 import { friendlyError, isNetworkError } from "@/lib/api/errors";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
@@ -37,6 +38,7 @@ function ShopPage() {
   const [reportOpen, setReportOpen] = useState(false);
 
   const sellerQuery = useSeller(id);
+  const premiumQuery = useIsPremiumSeller(id);
   const listingsQuery = useSellerListings(id, !isOwner);
   const reviewsQuery = useSellerReviews(id);
   const distributionQuery = useSellerRatingDistribution(id);
@@ -112,7 +114,7 @@ function ShopPage() {
             </div>
           </div>
           <div className="mt-4">
-            <div className="flex flex-wrap items-center gap-2"><h1 className="font-display text-2xl font-bold">{seller.name}</h1><VerificationBadge verified={seller.verified} compact /></div>
+            <div className="flex flex-wrap items-center gap-2"><h1 className="font-display text-2xl font-bold">{seller.name}</h1><VerificationBadge verified={seller.verified} compact />{premiumQuery.data === true && <span className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-xs font-semibold text-primary"><Star className="size-3" /> Premium</span>}</div>
             <p className="mt-1 text-sm text-muted-foreground">{seller.campus || "Campus non renseigné"} · {seller.since}{typeof seller.followers === "number" && seller.followers > 0 ? ` · ${seller.followers} abonné${seller.followers > 1 ? "s" : ""}` : ""}</p>
             {seller.bio && <p className="mt-3 max-w-2xl text-sm leading-6">{seller.bio}</p>}
           </div>

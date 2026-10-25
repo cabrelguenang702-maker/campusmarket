@@ -31,7 +31,7 @@ function PlannedOrNotFound() {
           tone="primary"
           title="Écran en cours de conception"
           description={`${planned.scope}. Cet écran fait partie de la phase ${planned.phase} du master${phase ? ` — « ${phase.title} »` : ""}.`}
-          actions={<><Button asChild size="lg"><AppLink to="/">Retour à l'accueil</AppLink></Button><Button asChild size="lg" variant="outline"><AppLink to="/design-system">Voir le design system</AppLink></Button></>}
+          actions={<><Button asChild size="lg"><AppLink to="/">Retour à l'accueil</AppLink></Button></>}
         />
         <div className="flex flex-wrap justify-center gap-2 pb-8">
           <Pill tone="primary">{planned.screens} écrans et états au master</Pill>

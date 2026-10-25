@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { SettingsCard } from "@/components/cm/setting-row";
+import { PushSettings } from "@/components/settings/PushSettings";
 import { toneSolidIcon } from "@/components/cm/badges";
 import { InlineAlert, Spinner } from "@/components/cm/feedback";
 import { categoryMeta } from "@/lib/notification-meta";
@@ -29,6 +30,7 @@ export function NotificationPreferences() {
 
   return (
     <div className="space-y-5">
+      <PushSettings />
       <SettingsCard title="Types de notifications" description="Choisissez comment être prévenu pour chaque type d'activité.">
         <div className="mt-1 hidden grid-cols-[1fr_84px_64px] gap-3 border-b border-border pb-2 text-[11px] font-bold uppercase tracking-wider text-muted-foreground sm:grid"><span /><span className="text-center">Dans l'app</span><span className="text-center">E-mail</span></div>
         <ul className="divide-y divide-border">

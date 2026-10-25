@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { AlertCircle, Check, CheckCircle, ChevronDown, Eye, EyeOff, File, ImageIcon, Search, Upload, X, type IconType } from "@/components/icons";
-import type { Country } from "@/lib/mock-data";
+import type { Country } from "@/lib/api/geo";
 import { Spinner } from "./feedback";
 
 /* ---------- Champ générique : label + aide + erreur ---------- */

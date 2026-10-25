@@ -14,6 +14,7 @@ import { ConfirmDialog } from "@/components/cm/feedback";
 import { EmptyScreen, NetworkErrorScreen, ServerErrorScreen } from "@/components/cm/screens";
 import { categoryOf, formatFcfa, timeLeft, type Product } from "@/lib/domain";
 import { useMyOrders, useOrderActions, type Order, type OrderStatus } from "@/lib/api/orders";
+import { DisputeDialog, OrderTimeline } from "@/components/orders/OrderExtras";
 import { findOrCreateConversation, useOfferResponses, useReceivedOffers, type ReceivedOffer } from "@/lib/api/engagement";
 import { deleteOwnListing, setOwnListingStatus, useSellerListings } from "@/lib/api/products";
 import { useMyWanted, useWantedMutations } from "@/lib/api/wanted";
@@ -75,6 +76,7 @@ function OrderRow({ order: o, kind, userId }: { order: Order; kind: "achat" | "v
   const category = categoryOf(o.productCategory);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [confirm, setConfirm] = useState<"dispute" | "cancel" | null>(null);
+  const [details, setDetails] = useState(false);
 
   const contact = async () => {
     try {
@@ -84,7 +86,7 @@ function OrderRow({ order: o, kind, userId }: { order: Order; kind: "achat" | "v
   };
   const run = (m: { mutate: (id: string, opts: { onSuccess: () => void; onError: (e: unknown) => void }) => void }, okMessage: string, description?: string) =>
     m.mutate(o.id, { onSuccess: () => toast.success(okMessage, description ? { description } : undefined), onError: (e) => toast.error(friendlyError(e, "Action impossible pour le moment.")) });
-  const busy = actions.receive.isPending || actions.handover.isPending || actions.dispute.isPending || actions.cancel.isPending;
+  const busy = actions.receive.isPending || actions.handover.isPending || actions.cancel.isPending;
 
   return (
     <li className="flex gap-3 rounded-xl border border-border bg-card p-3.5 sm:p-4">
@@ -102,6 +104,7 @@ function OrderRow({ order: o, kind, userId }: { order: Order; kind: "achat" | "v
             {kind === "achat" && o.status === "completed" && !o.reviewed && <Button size="sm" variant="soft" onClick={() => setReviewOpen(true)}><Star /> Noter le vendeur</Button>}
             {kind === "vente" && o.status === "paid" && <Button size="sm" disabled={busy} onClick={() => run(actions.handover, "Remise confirmée", "L'acheteur peut maintenant confirmer la réception.")}>Marquer comme remis</Button>}
             {o.status !== "cancelled" && <Button size="sm" variant="outline" onClick={() => void contact()}><MessageCircle /> Contacter</Button>}
+            <Button size="sm" variant="ghost" aria-expanded={details} onClick={() => setDetails((v) => !v)}>{details ? "Masquer le suivi" : "Suivi"}</Button>
             {kind === "achat" && (o.status === "pending_payment" || o.status === "paid" || o.status === "confirmed") && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild><Button size="sm" variant="outline" aria-label="Plus d'actions" disabled={busy}><MoreHorizontal /></Button></DropdownMenuTrigger>
@@ -113,9 +116,10 @@ function OrderRow({ order: o, kind, userId }: { order: Order; kind: "achat" | "v
             )}
           </span>
         </div>
+        {details && <OrderTimeline order={o} kind={kind} showReceipt={["paid", "confirmed", "completed", "disputed"].includes(o.status)} />}
       </div>
       {kind === "achat" && <ReviewDialog order={o} open={reviewOpen} onOpenChange={setReviewOpen} />}
-      <ConfirmDialog open={confirm === "dispute"} onOpenChange={(v) => !v && setConfirm(null)} title="Signaler un problème ?" description="Un litige est ouvert et notre équipe examine la commande. Utilisez-le si l'article n'est pas conforme ou n'a pas été remis." confirmLabel="Ouvrir un litige" onConfirm={() => run(actions.dispute, "Litige ouvert", "Notre équipe vous contactera.")} />
+      {kind === "achat" && <DisputeDialog order={o} open={confirm === "dispute"} onOpenChange={(v) => !v && setConfirm(null)} />}
       <ConfirmDialog open={confirm === "cancel"} onOpenChange={(v) => !v && setConfirm(null)} destructive title="Annuler cette commande ?" description={o.status === "paid" ? "Votre paiement a déjà été reçu : l'annulation sera traitée par notre support, qui organisera le remboursement." : "Votre réservation sera libérée. Aucun montant n'a été débité."} confirmLabel="Annuler la commande" cancelLabel="Garder la commande" onConfirm={() => run(actions.cancel, "Commande annulée")} />
     </li>
   );
@@ -175,6 +179,7 @@ function OrdersTab({ kind }: { kind: "achat" | "vente" }) {
   if (!userId) return <ProfileEmpty tab={kind === "achat" ? "achats" : "ventes"} />;
   return (
     <div>
+      {kind === "vente" && <p className="mb-3 text-sm"><AppLink to="/profil/finances" className="font-semibold text-primary hover:underline">Voir mon tableau financier</AppLink><span className="mx-2 text-muted-foreground">·</span><AppLink to="/profil/gains" className="font-semibold text-primary hover:underline">Mes gains et versements</AppLink><span className="mx-2 text-muted-foreground">·</span><AppLink to="/boutique-premium" className="font-semibold text-primary hover:underline">Boutique Premium</AppLink></p>}
       {kind === "vente" && <ReceivedOffers sellerId={userId} />}
       {orders.length === 0 ? (kind === "vente" ? <ProfileEmpty tab="ventes" /> : <ProfileEmpty tab="achats" />) : <ul className="space-y-3">{orders.map((o) => <OrderRow key={o.id} order={o} kind={kind} userId={userId} />)}</ul>}
     </div>

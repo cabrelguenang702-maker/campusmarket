@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getSupabase, requireSupabase } from "../supabase";
-import { friendlyError } from "./errors";
+import { UserFacingError, friendlyError } from "./errors";
 import type { ChatMessage } from "./messages";
 
 /* Aide et support : FAQ publique (lisible sans connexion) et tickets. Les règles sont tenues par la base (0019, 0051) :
@@ -172,7 +172,7 @@ export async function createTicket(input: { userId: string; category: string; su
 export async function closeTicket(id: string): Promise<void> {
   const { data, error } = await requireSupabase().from("support_tickets").update({ status: "ferme" }).eq("id", id).select("id");
   if (error) throw error;
-  if (!data || data.length === 0) throw new Error("Ticket introuvable ou déjà fermé.");
+  if (!data || data.length === 0) throw new UserFacingError("Ticket introuvable ou déjà fermé.");
 }
 
 /* ---------- Hooks ---------- */

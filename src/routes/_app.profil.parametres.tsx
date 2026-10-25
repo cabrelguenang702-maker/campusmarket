@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Bell, Devices, Eye, Settings, ShieldCheck, User } from "@/components/icons";
 import { AccountSection, DevicesSection, GeneralSection, PrivacySection } from "@/components/settings/OtherSections";
 import { NotificationPreferences } from "@/components/settings/NotificationPreferences";
+import { InstallApp } from "@/components/settings/InstallApp";
 import { SecuritySection, type SecuritySub } from "@/components/settings/SecuritySection";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { cn } from "@/lib/utils";
@@ -42,7 +43,7 @@ function SettingsPage() {
           ))}
         </nav>
         <div className="min-w-0">
-          {section === "general" && <GeneralSection />}
+          {section === "general" && <div className="space-y-5"><GeneralSection /><InstallApp /></div>}
           {section === "confidentialite" && <PrivacySection />}
           {section === "notifications" && <div className="max-w-2xl"><NotificationPreferences /></div>}
           {section === "securite" && <SecuritySection sub={sub} setSub={setSub} goDevices={() => goSection("appareils")} />}

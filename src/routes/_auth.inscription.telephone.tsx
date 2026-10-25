@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_auth/inscription/telephone")({
   ),
 });
 
-type Problem = "invalide" | "limite" | "sms" | "session" | "reseau" | null;
+type Problem = "invalide" | "limite" | "envoi" | "session" | "reseau" | null;
 
 function PhonePage() {
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ function PhonePage() {
       if (result.status === 400) return setProblem("invalide");
       if (result.status === 429) return setProblem("limite");
       if (result.status === 401) return setProblem("session");
-      if (result.status === 502) return setProblem("sms");
+      if (result.status === 502) return setProblem("envoi");
     }
     setProblem("reseau");
   };
@@ -54,7 +54,7 @@ function PhonePage() {
     <AuthPage
       step={3}
       title="Quel est votre numéro ?"
-      description="Nous vous envoyons un code par SMS pour vérifier votre numéro. Il servira aussi à vos paiements Mobile Money."
+      description="Indiquez le numéro de votre compte Mobile Money. Nous envoyons le code de vérification à l'adresse e-mail de votre compte."
       icon={<IconBadge icon={Smartphone} />}
     >
       {smsSupported ? (
@@ -80,7 +80,7 @@ function PhonePage() {
           />
         </Field>
       ) : (
-        <InlineAlert tone="info" title="Vérification par SMS bientôt disponible">
+        <InlineAlert tone="info" title="Vérification du téléphone bientôt disponible">
           La vérification du téléphone n'est pas encore disponible pour {country.name}. Vous pourrez
           la faire plus tard depuis votre profil.
         </InlineAlert>
@@ -93,9 +93,9 @@ function PhonePage() {
             réessayer.
           </InlineAlert>
         )}
-        {problem === "sms" && (
-          <InlineAlert tone="warning" title="Envoi du SMS impossible">
-            Le service SMS est momentanément indisponible. Vous pouvez passer cette étape et
+        {problem === "envoi" && (
+          <InlineAlert tone="warning" title="Envoi du code impossible">
+            L'envoi du code par e-mail est momentanément indisponible. Vous pouvez passer cette étape et
             vérifier votre numéro plus tard.
           </InlineAlert>
         )}

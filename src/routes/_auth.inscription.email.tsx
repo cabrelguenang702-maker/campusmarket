@@ -230,11 +230,11 @@ function AccountPage() {
         />
         <Label htmlFor="terms" className="text-xs font-normal leading-5 text-muted-foreground">
           J'accepte les{" "}
-          <AppLink to="/aide" className="font-semibold text-primary hover:underline">
+          <AppLink to="/conditions" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">
             conditions d'utilisation
           </AppLink>{" "}
           et la{" "}
-          <AppLink to="/aide" className="font-semibold text-primary hover:underline">
+          <AppLink to="/confidentialite" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">
             politique de confidentialité
           </AppLink>{" "}
           de CampusMarket.

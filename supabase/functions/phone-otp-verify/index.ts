@@ -1,7 +1,7 @@
 // =============================================================================
 // phone-otp-verify — vérifie le code envoyé par phone-otp-request et, en cas
 // de succès, marque profile_private.phone / phone_verified. Comparaison de
-// hash uniquement : le code en clair ne transite jamais après son envoi SMS.
+// hash uniquement : le code en clair ne transite jamais après son envoi (e-mail ou SMS).
 // =============================================================================
 
 import { createClient } from "npm:@supabase/supabase-js@2";

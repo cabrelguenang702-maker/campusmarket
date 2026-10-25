@@ -94,7 +94,7 @@ function CatalogPage() {
 
   return (
     <div>
-      <PageHeader kicker="Campus Academy" title="Apprenez à votre rythme" description="Des formations créées par des étudiants et des professionnels, avec certificat de réussite." breadcrumbs={[{ label: "Accueil", to: "/" }, { label: "Formations" }]} />
+      <PageHeader kicker="Campus Academy" title="Apprenez à votre rythme" description="Des formations créées par des étudiants et des professionnels, avec certificat de réussite." breadcrumbs={[{ label: "Accueil", to: "/" }, { label: "Formations" }]} actions={<><Button asChild variant="outline"><AppLink to="/revision">Groupes de révision</AppLink></Button><Button asChild variant="outline"><AppLink to="/tutorat">Tutorat</AppLink></Button><Button asChild variant="outline"><AppLink to="/aide-etudes">Aide aux études</AppLink></Button><Button asChild variant="outline"><AppLink to="/progression">Ma progression</AppLink></Button></>} />
       <div className="mb-5 inline-flex rounded-lg bg-muted p-1" role="tablist" aria-label="Vue">
         {([["catalogue", "Catalogue"], ["mes", `Mes formations (${mine.length})`]] as const).map(([id, label]) => (
           <button key={id} role="tab" aria-selected={vue === id} onClick={() => setSearch({ vue: id === "mes" ? "mes" : undefined })} className={cn("rounded-md px-4 py-2 text-sm font-semibold transition", vue === id ? "bg-background text-foreground shadow" : "text-muted-foreground hover:text-foreground")}>{label}</button>

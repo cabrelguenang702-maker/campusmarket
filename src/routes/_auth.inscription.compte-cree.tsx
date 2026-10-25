@@ -4,8 +4,8 @@ import { ArrowRight, BadgeCheck, Check, Party } from "@/components/icons";
 import { AppLink } from "@/components/cm/app-link";
 import { RequireSession, useAuth } from "@/lib/auth";
 import { formatCameroonPhone } from "@/lib/auth-utils";
-import { REGISTRATION_PAYMENT_ENABLED } from "@/lib/config";
-import { formatFcfa, REGISTRATION_FEE } from "@/lib/mock-data";
+import { useMyRegistration } from "@/lib/api/registration";
+import { formatFcfa } from "@/lib/domain";
 
 export const Route = createFileRoute("/_auth/inscription/compte-cree")({
   head: () => ({ meta: [{ title: "Compte créé — CampusMarket" }] }),
@@ -14,6 +14,7 @@ export const Route = createFileRoute("/_auth/inscription/compte-cree")({
 
 function AccountCreatedPage() {
   const { account, session } = useAuth();
+  const registration = useMyRegistration(session?.user.id).data;
   const profile = account?.profile;
   const phone = account?.private?.phone ?? null;
   const phoneVerified = account?.private?.phoneVerified ?? false;
@@ -25,7 +26,7 @@ function AccountCreatedPage() {
     { label: phoneVerified ? "Téléphone vérifié" : "Téléphone", value: phoneVerified && phone ? formatCameroonPhone(phone) : "À vérifier plus tard", done: phoneVerified },
     { label: emailVerified ? "E-mail vérifié" : "E-mail", value: account?.private?.email ?? session?.user.email ?? "—", done: emailVerified },
     { label: "Université", value: university ?? "Non renseignée", done: Boolean(university) },
-    ...(REGISTRATION_PAYMENT_ENABLED ? [{ label: "Inscription réglée", value: formatFcfa(REGISTRATION_FEE), done: true }] : []),
+    ...(registration?.status === "paid" && registration.fee ? [{ label: "Inscription réglée", value: formatFcfa(registration.fee), done: true }] : []),
   ];
 
   return (

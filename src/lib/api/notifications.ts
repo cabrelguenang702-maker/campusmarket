@@ -29,6 +29,9 @@ type Row = {
 const str = (v: unknown): string | undefined => (typeof v === "string" && v ? v : undefined);
 
 /** Texte et destination d'une notification, d'après son type. Un type inconnu reste lisible (repli générique). */
+const JOB_STATUS: Record<string, string> = { reviewing: "en cours d'examen", shortlisted: "vous êtes présélectionné(e)", interview: "un entretien est envisagé", accepted: "candidature acceptée", rejected: "candidature non retenue" };
+const jobStatusLabel = (s: string | undefined) => (s ? JOB_STATUS[s] ?? "mise à jour" : "mise à jour");
+
 export function describe(r: Pick<Row, "type" | "category" | "target_id" | "payload"> & { actorName?: string | undefined }): { title: string; body: string; to: string } {
   const who = r.actorName ?? "Un membre";
   const id = r.target_id;
@@ -67,7 +70,19 @@ export function describe(r: Pick<Row, "type" | "category" | "target_id" | "paylo
     case "university_suggestion_rejected": return { title: "Suggestion refusée", body: "Votre suggestion d'université n'a pas été retenue.", to: "/universites" };
     case "account_suspended": return { title: "Compte suspendu", body: "Votre compte a été suspendu. Contactez le support pour en savoir plus.", to: "/aide" };
     case "account_reactivated": return { title: "Compte réactivé", body: "Votre compte est de nouveau actif.", to: "/" };
-    case "staff_invitation": return { title: "Invitation à l'équipe", body: "Vous avez été invité à rejoindre l'équipe d'administration.", to: "/admin" };
+    case "badge_earned": return { title: "Nouveau badge", body: `Vous avez obtenu le badge « ${str(p["title"]) ?? "Campus Academy"} ».`, to: "/progression" };
+    case "job_application_received": return { title: "Nouvelle candidature", body: `Une candidature est arrivée pour « ${str(p["title"]) ?? "votre offre"} ».`, to: "/emplois/recruteur" };
+    case "job_application_update": return { title: "Votre candidature avance", body: `« ${str(p["title"]) ?? "Une offre"} » : ${jobStatusLabel(str(p["status"]))}.`, to: "/emplois/candidatures" };
+    case "job_offer_published": return { title: "Offre publiée", body: `« ${str(p["title"]) ?? "Votre offre"} » est en ligne.`, to: "/emplois/recruteur" };
+    case "job_offer_rejected": return { title: "Offre refusée", body: `« ${str(p["title"]) ?? "Votre offre"} » n'a pas été validée${str(p["reason"]) ? ` : ${str(p["reason"])}` : "."}`, to: "/emplois/recruteur" };
+    case "job_offer_suspended": return { title: "Offre suspendue", body: `« ${str(p["title"]) ?? "Votre offre"} » a été suspendue${str(p["reason"]) ? ` : ${str(p["reason"])}` : "."}`, to: "/emplois/recruteur" };
+    case "recruiter_verified": return { title: "Organisation vérifiée", body: "Votre espace recruteur est actif : vos offres sont publiées directement.", to: "/emplois/recruteur" };
+    case "recruiter_rejected": return { title: "Demande recruteur refusée", body: str(p["reason"]) ?? "Votre demande n'a pas été retenue.", to: "/emplois/recruteur" };
+    case "recruiter_suspended": return { title: "Espace recruteur suspendu", body: str(p["reason"]) ?? "Votre espace recruteur a été suspendu.", to: "/emplois/recruteur" };
+    case "dispute_opened": return { title: "Litige ouvert sur une vente", body: `L'acheteur signale un problème${str(p["name"]) ? ` sur « ${str(p["name"])} »` : ""}. Vous pouvez répondre une fois.`, to: "/profil?onglet=ventes" };
+    case "dispute_response": return { title: "Réponse du vendeur", body: "Le vendeur a répondu à votre litige.", to: "/profil?onglet=achats" };
+    case "dispute_resolved": return { title: "Litige tranché", body: str(p["outcome"]) === (str(p["for"]) === "seller" ? "seller" : "buyer") ? "Notre équipe a tranché en votre faveur." : "Notre équipe a tranché en faveur de l'autre partie. Consultez la décision.", to: str(p["for"]) === "seller" ? "/profil?onglet=ventes" : "/profil?onglet=achats" };
+    case "staff_invitation": return { title: "Invitation à l'équipe", body: "Vous avez été invité à rejoindre l'équipe d'administration.", to: id ? `/invitation-equipe/${id}` : "/admin" };
     case "new_device_detected": return { title: "Nouvel appareil détecté", body: "Une connexion depuis un nouvel appareil a eu lieu. Si ce n'était pas vous, changez votre mot de passe.", to: "/profil/parametres" };
     case "role_granted": return { title: "Nouveau rôle", body: "Des droits supplémentaires vous ont été accordés.", to: "/profil/parametres" };
     case "role_revoked": return { title: "Rôle retiré", body: "Certains de vos droits ont été retirés.", to: "/profil/parametres" };

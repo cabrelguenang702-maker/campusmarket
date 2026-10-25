@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import {
   AlertCircle, BadgeCheck, Block, Check, CheckCircle, Clock, Hourglass, MapPin, Star, X, type IconType,
 } from "@/components/icons";
-import type { Stock } from "@/lib/mock-data";
+import type { Stock } from "@/lib/domain";
 
 export type Tone = "neutral" | "primary" | "success" | "warning" | "danger" | "info";
 

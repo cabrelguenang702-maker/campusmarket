@@ -6,7 +6,7 @@ import { formatCameroonPhone, toE164 } from "@/lib/auth-utils";
 import { useOnboarding } from "@/lib/onboarding";
 
 export const Route = createFileRoute("/_auth/inscription/otp-telephone")({
-  head: () => ({ meta: [{ title: "Code de vérification SMS — CampusMarket" }] }),
+  head: () => ({ meta: [{ title: "Code de vérification — CampusMarket" }] }),
   component: () => (
     <RequireSession>
       <PhoneOtpPage />
@@ -57,12 +57,12 @@ function PhoneOtpPage() {
   return (
     <OtpStep
       channel="phone"
-      target={formatCameroonPhone(e164)}
+      target={`l'adresse e-mail de votre compte (numéro ${formatCameroonPhone(e164)})`}
       step={3}
       back="/inscription/telephone"
       next="/inscription/universite"
-      title="Entrez le code reçu par SMS"
-      description="Saisissez le code à 6 chiffres envoyé à votre numéro."
+      title="Entrez le code reçu par e-mail"
+      description="Saisissez le code à 6 chiffres envoyé à l'adresse e-mail de votre compte (pensez à vérifier vos courriers indésirables)."
       onVerify={onVerify}
       onResend={onResend}
     />

@@ -12,36 +12,52 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as LegalRouteImport } from './routes/_legal'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppSplatRouteImport } from './routes/_app.$'
 import { Route as App404RouteImport } from './routes/_app.404'
 import { Route as AppAccesRefuseRouteImport } from './routes/_app.acces-refuse'
-import { Route as AppDesignSystemRouteImport } from './routes/_app.design-system'
+import { Route as AppAideEtudesRouteImport } from './routes/_app.aide-etudes'
+import { Route as AppBoutiquePremiumRouteImport } from './routes/_app.boutique-premium'
 import { Route as AppFavorisRouteImport } from './routes/_app.favoris'
 import { Route as AppJeRechercheRouteImport } from './routes/_app.je-recherche'
 import { Route as AppMarketplaceRouteImport } from './routes/_app.marketplace'
 import { Route as AppMessagesRouteImport } from './routes/_app.messages'
 import { Route as AppNotificationsRouteImport } from './routes/_app.notifications'
+import { Route as AppProgressionRouteImport } from './routes/_app.progression'
 import { Route as AppPublierRouteImport } from './routes/_app.publier'
 import { Route as AuthBienvenueRouteImport } from './routes/_auth.bienvenue'
 import { Route as AuthConnexionRouteImport } from './routes/_auth.connexion'
 import { Route as AuthMotDePasseOublieRouteImport } from './routes/_auth.mot-de-passe-oublie'
+import { Route as LegalConditionsRouteImport } from './routes/_legal.conditions'
+import { Route as LegalConfidentialiteRouteImport } from './routes/_legal.confidentialite'
+import { Route as LegalMentionsLegalesRouteImport } from './routes/_legal.mentions-legales'
 import { Route as AdminAdminIndexRouteImport } from './routes/_admin.admin.index'
 import { Route as AppAideIndexRouteImport } from './routes/_app.aide.index'
 import { Route as AppAideIdRouteImport } from './routes/_app.aide.$id'
 import { Route as AppBoutiqueIdRouteImport } from './routes/_app.boutique.$id'
 import { Route as AppCommunautesIndexRouteImport } from './routes/_app.communautes.index'
+import { Route as AppEmploisIndexRouteImport } from './routes/_app.emplois.index'
+import { Route as AppEmploisIdRouteImport } from './routes/_app.emplois.$id'
+import { Route as AppEmploisCandidaturesRouteImport } from './routes/_app.emplois.candidatures'
+import { Route as AppEmploisProfilRouteImport } from './routes/_app.emplois.profil'
+import { Route as AppEmploisRecruteurRouteImport } from './routes/_app.emplois.recruteur'
 import { Route as AppEvenementsIndexRouteImport } from './routes/_app.evenements.index'
 import { Route as AppEvenementsCreerRouteImport } from './routes/_app.evenements.creer'
 import { Route as AppFormationsIndexRouteImport } from './routes/_app.formations.index'
 import { Route as AppGroupesIndexRouteImport } from './routes/_app.groupes.index'
+import { Route as AppInvitationEquipeIdRouteImport } from './routes/_app.invitation-equipe.$id'
 import { Route as AppMessagesIndexRouteImport } from './routes/_app.messages.index'
 import { Route as AppMessagesIdRouteImport } from './routes/_app.messages.$id'
 import { Route as AppProfilIndexRouteImport } from './routes/_app.profil.index'
 import { Route as AppProfilAchatsRouteImport } from './routes/_app.profil.achats'
 import { Route as AppProfilAnnoncesRouteImport } from './routes/_app.profil.annonces'
+import { Route as AppProfilFinancesRouteImport } from './routes/_app.profil.finances'
+import { Route as AppProfilGainsRouteImport } from './routes/_app.profil.gains'
 import { Route as AppProfilParametresRouteImport } from './routes/_app.profil.parametres'
 import { Route as AppProfilVerificationRouteImport } from './routes/_app.profil.verification'
+import { Route as AppRevisionIndexRouteImport } from './routes/_app.revision.index'
+import { Route as AppTutoratIndexRouteImport } from './routes/_app.tutorat.index'
 import { Route as AppUniversitesIndexRouteImport } from './routes/_app.universites.index'
 import { Route as AuthInscriptionCompteCreeRouteImport } from './routes/_auth.inscription.compte-cree'
 import { Route as AuthInscriptionEmailRouteImport } from './routes/_auth.inscription.email'
@@ -54,7 +70,10 @@ import { Route as AuthInscriptionUniversiteRouteImport } from './routes/_auth.in
 import { Route as AuthReinitialisationCodeRouteImport } from './routes/_auth.reinitialisation.code'
 import { Route as AuthReinitialisationNouveauMotDePasseRouteImport } from './routes/_auth.reinitialisation.nouveau-mot-de-passe'
 import { Route as AdminAdminAnnoncesIndexRouteImport } from './routes/_admin.admin.annonces.index'
+import { Route as AdminAdminEmploisIndexRouteImport } from './routes/_admin.admin.emplois.index'
+import { Route as AdminAdminFinancesIndexRouteImport } from './routes/_admin.admin.finances.index'
 import { Route as AdminAdminGeographieIndexRouteImport } from './routes/_admin.admin.geographie.index'
+import { Route as AdminAdminLitigesIndexRouteImport } from './routes/_admin.admin.litiges.index'
 import { Route as AdminAdminParametresIndexRouteImport } from './routes/_admin.admin.parametres.index'
 import { Route as AdminAdminSecuriteIndexRouteImport } from './routes/_admin.admin.securite.index'
 import { Route as AdminAdminStatistiquesIndexRouteImport } from './routes/_admin.admin.statistiques.index'
@@ -72,8 +91,13 @@ import { Route as AppGroupesIdMembresRouteImport } from './routes/_app.groupes.$
 import { Route as AppProduitIdIndexRouteImport } from './routes/_app.produit.$id.index'
 import { Route as AppProduitIdAchatGroupeRouteImport } from './routes/_app.produit.$id.achat-groupe'
 import { Route as AppProduitIdAcheterRouteImport } from './routes/_app.produit.$id.acheter'
+import { Route as AppProfilRecuIdRouteImport } from './routes/_app.profil.recu.$id'
+import { Route as AppRevisionIdIndexRouteImport } from './routes/_app.revision.$id.index'
+import { Route as AppTutoratIdIndexRouteImport } from './routes/_app.tutorat.$id.index'
 import { Route as AppUniversitesIdIndexRouteImport } from './routes/_app.universites.$id.index'
 import { Route as AppFormationsIdModulesModuleIdRouteImport } from './routes/_app.formations.$id.modules.$moduleId'
+import { Route as AppFormationsIdQuizEditeurQuizIdRouteImport } from './routes/_app.formations.$id.quiz-editeur.$quizId'
+import { Route as AppFormationsIdQuizQuizIdRouteImport } from './routes/_app.formations.$id.quiz.$quizId'
 
 const AdminRoute = AdminRouteImport.update({
   id: '/_admin',
@@ -85,6 +109,10 @@ const AppRoute = AppRouteImport.update({
 } as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalRoute = LegalRouteImport.update({
+  id: '/_legal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -107,9 +135,14 @@ const AppAccesRefuseRoute = AppAccesRefuseRouteImport.update({
   path: '/acces-refuse',
   getParentRoute: () => AppRoute,
 } as any)
-const AppDesignSystemRoute = AppDesignSystemRouteImport.update({
-  id: '/design-system',
-  path: '/design-system',
+const AppAideEtudesRoute = AppAideEtudesRouteImport.update({
+  id: '/aide-etudes',
+  path: '/aide-etudes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBoutiquePremiumRoute = AppBoutiquePremiumRouteImport.update({
+  id: '/boutique-premium',
+  path: '/boutique-premium',
   getParentRoute: () => AppRoute,
 } as any)
 const AppFavorisRoute = AppFavorisRouteImport.update({
@@ -137,6 +170,11 @@ const AppNotificationsRoute = AppNotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => AppRoute,
 } as any)
+const AppProgressionRoute = AppProgressionRouteImport.update({
+  id: '/progression',
+  path: '/progression',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppPublierRoute = AppPublierRouteImport.update({
   id: '/publier',
   path: '/publier',
@@ -156,6 +194,21 @@ const AuthMotDePasseOublieRoute = AuthMotDePasseOublieRouteImport.update({
   id: '/mot-de-passe-oublie',
   path: '/mot-de-passe-oublie',
   getParentRoute: () => AuthRoute,
+} as any)
+const LegalConditionsRoute = LegalConditionsRouteImport.update({
+  id: '/conditions',
+  path: '/conditions',
+  getParentRoute: () => LegalRoute,
+} as any)
+const LegalConfidentialiteRoute = LegalConfidentialiteRouteImport.update({
+  id: '/confidentialite',
+  path: '/confidentialite',
+  getParentRoute: () => LegalRoute,
+} as any)
+const LegalMentionsLegalesRoute = LegalMentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
+  getParentRoute: () => LegalRoute,
 } as any)
 const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
   id: '/admin/',
@@ -182,6 +235,31 @@ const AppCommunautesIndexRoute = AppCommunautesIndexRouteImport.update({
   path: '/communautes/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppEmploisIndexRoute = AppEmploisIndexRouteImport.update({
+  id: '/emplois/',
+  path: '/emplois/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEmploisIdRoute = AppEmploisIdRouteImport.update({
+  id: '/emplois/$id',
+  path: '/emplois/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEmploisCandidaturesRoute = AppEmploisCandidaturesRouteImport.update({
+  id: '/emplois/candidatures',
+  path: '/emplois/candidatures',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEmploisProfilRoute = AppEmploisProfilRouteImport.update({
+  id: '/emplois/profil',
+  path: '/emplois/profil',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEmploisRecruteurRoute = AppEmploisRecruteurRouteImport.update({
+  id: '/emplois/recruteur',
+  path: '/emplois/recruteur',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppEvenementsIndexRoute = AppEvenementsIndexRouteImport.update({
   id: '/evenements/',
   path: '/evenements/',
@@ -200,6 +278,11 @@ const AppFormationsIndexRoute = AppFormationsIndexRouteImport.update({
 const AppGroupesIndexRoute = AppGroupesIndexRouteImport.update({
   id: '/groupes/',
   path: '/groupes/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInvitationEquipeIdRoute = AppInvitationEquipeIdRouteImport.update({
+  id: '/invitation-equipe/$id',
+  path: '/invitation-equipe/$id',
   getParentRoute: () => AppRoute,
 } as any)
 const AppMessagesIndexRoute = AppMessagesIndexRouteImport.update({
@@ -227,6 +310,16 @@ const AppProfilAnnoncesRoute = AppProfilAnnoncesRouteImport.update({
   path: '/profil/annonces',
   getParentRoute: () => AppRoute,
 } as any)
+const AppProfilFinancesRoute = AppProfilFinancesRouteImport.update({
+  id: '/profil/finances',
+  path: '/profil/finances',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfilGainsRoute = AppProfilGainsRouteImport.update({
+  id: '/profil/gains',
+  path: '/profil/gains',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppProfilParametresRoute = AppProfilParametresRouteImport.update({
   id: '/profil/parametres',
   path: '/profil/parametres',
@@ -235,6 +328,16 @@ const AppProfilParametresRoute = AppProfilParametresRouteImport.update({
 const AppProfilVerificationRoute = AppProfilVerificationRouteImport.update({
   id: '/profil/verification',
   path: '/profil/verification',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRevisionIndexRoute = AppRevisionIndexRouteImport.update({
+  id: '/revision/',
+  path: '/revision/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTutoratIndexRoute = AppTutoratIndexRouteImport.update({
+  id: '/tutorat/',
+  path: '/tutorat/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppUniversitesIndexRoute = AppUniversitesIndexRouteImport.update({
@@ -303,12 +406,27 @@ const AdminAdminAnnoncesIndexRoute = AdminAdminAnnoncesIndexRouteImport.update({
   path: '/admin/annonces/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAdminEmploisIndexRoute = AdminAdminEmploisIndexRouteImport.update({
+  id: '/admin/emplois/',
+  path: '/admin/emplois/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminFinancesIndexRoute = AdminAdminFinancesIndexRouteImport.update({
+  id: '/admin/finances/',
+  path: '/admin/finances/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAdminGeographieIndexRoute =
   AdminAdminGeographieIndexRouteImport.update({
     id: '/admin/geographie/',
     path: '/admin/geographie/',
     getParentRoute: () => AdminRoute,
   } as any)
+const AdminAdminLitigesIndexRoute = AdminAdminLitigesIndexRouteImport.update({
+  id: '/admin/litiges/',
+  path: '/admin/litiges/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAdminParametresIndexRoute =
   AdminAdminParametresIndexRouteImport.update({
     id: '/admin/parametres/',
@@ -399,6 +517,21 @@ const AppProduitIdAcheterRoute = AppProduitIdAcheterRouteImport.update({
   path: '/produit/$id/acheter',
   getParentRoute: () => AppRoute,
 } as any)
+const AppProfilRecuIdRoute = AppProfilRecuIdRouteImport.update({
+  id: '/profil/recu/$id',
+  path: '/profil/recu/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRevisionIdIndexRoute = AppRevisionIdIndexRouteImport.update({
+  id: '/revision/$id/',
+  path: '/revision/$id/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTutoratIdIndexRoute = AppTutoratIdIndexRouteImport.update({
+  id: '/tutorat/$id/',
+  path: '/tutorat/$id/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppUniversitesIdIndexRoute = AppUniversitesIdIndexRouteImport.update({
   id: '/universites/$id/',
   path: '/universites/$id/',
@@ -410,28 +543,52 @@ const AppFormationsIdModulesModuleIdRoute =
     path: '/formations/$id/modules/$moduleId',
     getParentRoute: () => AppRoute,
   } as any)
+const AppFormationsIdQuizEditeurQuizIdRoute =
+  AppFormationsIdQuizEditeurQuizIdRouteImport.update({
+    id: '/formations/$id/quiz-editeur/$quizId',
+    path: '/formations/$id/quiz-editeur/$quizId',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppFormationsIdQuizQuizIdRoute =
+  AppFormationsIdQuizQuizIdRouteImport.update({
+    id: '/formations/$id/quiz/$quizId',
+    path: '/formations/$id/quiz/$quizId',
+    getParentRoute: () => AppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/$': typeof AppSplatRoute
   '/404': typeof App404Route
   '/acces-refuse': typeof AppAccesRefuseRoute
-  '/design-system': typeof AppDesignSystemRoute
+  '/aide-etudes': typeof AppAideEtudesRoute
+  '/boutique-premium': typeof AppBoutiquePremiumRoute
   '/favoris': typeof AppFavorisRoute
   '/je-recherche': typeof AppJeRechercheRoute
   '/marketplace': typeof AppMarketplaceRoute
   '/messages': typeof AppMessagesRouteWithChildren
   '/notifications': typeof AppNotificationsRoute
+  '/progression': typeof AppProgressionRoute
   '/publier': typeof AppPublierRoute
   '/bienvenue': typeof AuthBienvenueRoute
   '/connexion': typeof AuthConnexionRoute
   '/mot-de-passe-oublie': typeof AuthMotDePasseOublieRoute
+  '/conditions': typeof LegalConditionsRoute
+  '/confidentialite': typeof LegalConfidentialiteRoute
+  '/mentions-legales': typeof LegalMentionsLegalesRoute
   '/aide/$id': typeof AppAideIdRoute
   '/boutique/$id': typeof AppBoutiqueIdRoute
+  '/emplois/$id': typeof AppEmploisIdRoute
+  '/emplois/candidatures': typeof AppEmploisCandidaturesRoute
+  '/emplois/profil': typeof AppEmploisProfilRoute
+  '/emplois/recruteur': typeof AppEmploisRecruteurRoute
   '/evenements/creer': typeof AppEvenementsCreerRoute
+  '/invitation-equipe/$id': typeof AppInvitationEquipeIdRoute
   '/messages/$id': typeof AppMessagesIdRoute
   '/profil/achats': typeof AppProfilAchatsRoute
   '/profil/annonces': typeof AppProfilAnnoncesRoute
+  '/profil/finances': typeof AppProfilFinancesRoute
+  '/profil/gains': typeof AppProfilGainsRoute
   '/profil/parametres': typeof AppProfilParametresRoute
   '/profil/verification': typeof AppProfilVerificationRoute
   '/inscription/compte-cree': typeof AuthInscriptionCompteCreeRoute
@@ -447,11 +604,14 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminAdminIndexRoute
   '/aide/': typeof AppAideIndexRoute
   '/communautes/': typeof AppCommunautesIndexRoute
+  '/emplois/': typeof AppEmploisIndexRoute
   '/evenements/': typeof AppEvenementsIndexRoute
   '/formations/': typeof AppFormationsIndexRoute
   '/groupes/': typeof AppGroupesIndexRoute
   '/messages/': typeof AppMessagesIndexRoute
   '/profil/': typeof AppProfilIndexRoute
+  '/revision/': typeof AppRevisionIndexRoute
+  '/tutorat/': typeof AppTutoratIndexRoute
   '/universites/': typeof AppUniversitesIndexRoute
   '/communautes/$id/membres': typeof AppCommunautesIdMembresRoute
   '/evenements/$id/controle': typeof AppEvenementsIdControleRoute
@@ -459,8 +619,12 @@ export interface FileRoutesByFullPath {
   '/groupes/$id/membres': typeof AppGroupesIdMembresRoute
   '/produit/$id/achat-groupe': typeof AppProduitIdAchatGroupeRoute
   '/produit/$id/acheter': typeof AppProduitIdAcheterRoute
+  '/profil/recu/$id': typeof AppProfilRecuIdRoute
   '/admin/annonces/': typeof AdminAdminAnnoncesIndexRoute
+  '/admin/emplois/': typeof AdminAdminEmploisIndexRoute
+  '/admin/finances/': typeof AdminAdminFinancesIndexRoute
   '/admin/geographie/': typeof AdminAdminGeographieIndexRoute
+  '/admin/litiges/': typeof AdminAdminLitigesIndexRoute
   '/admin/parametres/': typeof AdminAdminParametresIndexRoute
   '/admin/securite/': typeof AdminAdminSecuriteIndexRoute
   '/admin/statistiques/': typeof AdminAdminStatistiquesIndexRoute
@@ -472,29 +636,45 @@ export interface FileRoutesByFullPath {
   '/formations/$id/': typeof AppFormationsIdIndexRoute
   '/groupes/$id/': typeof AppGroupesIdIndexRoute
   '/produit/$id/': typeof AppProduitIdIndexRoute
+  '/revision/$id/': typeof AppRevisionIdIndexRoute
+  '/tutorat/$id/': typeof AppTutoratIdIndexRoute
   '/universites/$id/': typeof AppUniversitesIdIndexRoute
   '/formations/$id/modules/$moduleId': typeof AppFormationsIdModulesModuleIdRoute
+  '/formations/$id/quiz-editeur/$quizId': typeof AppFormationsIdQuizEditeurQuizIdRoute
+  '/formations/$id/quiz/$quizId': typeof AppFormationsIdQuizQuizIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
   '/$': typeof AppSplatRoute
   '/404': typeof App404Route
   '/acces-refuse': typeof AppAccesRefuseRoute
-  '/design-system': typeof AppDesignSystemRoute
+  '/aide-etudes': typeof AppAideEtudesRoute
+  '/boutique-premium': typeof AppBoutiquePremiumRoute
   '/favoris': typeof AppFavorisRoute
   '/je-recherche': typeof AppJeRechercheRoute
   '/marketplace': typeof AppMarketplaceRoute
   '/notifications': typeof AppNotificationsRoute
+  '/progression': typeof AppProgressionRoute
   '/publier': typeof AppPublierRoute
   '/bienvenue': typeof AuthBienvenueRoute
   '/connexion': typeof AuthConnexionRoute
   '/mot-de-passe-oublie': typeof AuthMotDePasseOublieRoute
+  '/conditions': typeof LegalConditionsRoute
+  '/confidentialite': typeof LegalConfidentialiteRoute
+  '/mentions-legales': typeof LegalMentionsLegalesRoute
   '/aide/$id': typeof AppAideIdRoute
   '/boutique/$id': typeof AppBoutiqueIdRoute
+  '/emplois/$id': typeof AppEmploisIdRoute
+  '/emplois/candidatures': typeof AppEmploisCandidaturesRoute
+  '/emplois/profil': typeof AppEmploisProfilRoute
+  '/emplois/recruteur': typeof AppEmploisRecruteurRoute
   '/evenements/creer': typeof AppEvenementsCreerRoute
+  '/invitation-equipe/$id': typeof AppInvitationEquipeIdRoute
   '/messages/$id': typeof AppMessagesIdRoute
   '/profil/achats': typeof AppProfilAchatsRoute
   '/profil/annonces': typeof AppProfilAnnoncesRoute
+  '/profil/finances': typeof AppProfilFinancesRoute
+  '/profil/gains': typeof AppProfilGainsRoute
   '/profil/parametres': typeof AppProfilParametresRoute
   '/profil/verification': typeof AppProfilVerificationRoute
   '/inscription/compte-cree': typeof AuthInscriptionCompteCreeRoute
@@ -510,11 +690,14 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminAdminIndexRoute
   '/aide': typeof AppAideIndexRoute
   '/communautes': typeof AppCommunautesIndexRoute
+  '/emplois': typeof AppEmploisIndexRoute
   '/evenements': typeof AppEvenementsIndexRoute
   '/formations': typeof AppFormationsIndexRoute
   '/groupes': typeof AppGroupesIndexRoute
   '/messages': typeof AppMessagesIndexRoute
   '/profil': typeof AppProfilIndexRoute
+  '/revision': typeof AppRevisionIndexRoute
+  '/tutorat': typeof AppTutoratIndexRoute
   '/universites': typeof AppUniversitesIndexRoute
   '/communautes/$id/membres': typeof AppCommunautesIdMembresRoute
   '/evenements/$id/controle': typeof AppEvenementsIdControleRoute
@@ -522,8 +705,12 @@ export interface FileRoutesByTo {
   '/groupes/$id/membres': typeof AppGroupesIdMembresRoute
   '/produit/$id/achat-groupe': typeof AppProduitIdAchatGroupeRoute
   '/produit/$id/acheter': typeof AppProduitIdAcheterRoute
+  '/profil/recu/$id': typeof AppProfilRecuIdRoute
   '/admin/annonces': typeof AdminAdminAnnoncesIndexRoute
+  '/admin/emplois': typeof AdminAdminEmploisIndexRoute
+  '/admin/finances': typeof AdminAdminFinancesIndexRoute
   '/admin/geographie': typeof AdminAdminGeographieIndexRoute
+  '/admin/litiges': typeof AdminAdminLitigesIndexRoute
   '/admin/parametres': typeof AdminAdminParametresIndexRoute
   '/admin/securite': typeof AdminAdminSecuriteIndexRoute
   '/admin/statistiques': typeof AdminAdminStatistiquesIndexRoute
@@ -535,34 +722,51 @@ export interface FileRoutesByTo {
   '/formations/$id': typeof AppFormationsIdIndexRoute
   '/groupes/$id': typeof AppGroupesIdIndexRoute
   '/produit/$id': typeof AppProduitIdIndexRoute
+  '/revision/$id': typeof AppRevisionIdIndexRoute
+  '/tutorat/$id': typeof AppTutoratIdIndexRoute
   '/universites/$id': typeof AppUniversitesIdIndexRoute
   '/formations/$id/modules/$moduleId': typeof AppFormationsIdModulesModuleIdRoute
+  '/formations/$id/quiz-editeur/$quizId': typeof AppFormationsIdQuizEditeurQuizIdRoute
+  '/formations/$id/quiz/$quizId': typeof AppFormationsIdQuizQuizIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_admin': typeof AdminRouteWithChildren
   '/_app': typeof AppRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
+  '/_legal': typeof LegalRouteWithChildren
   '/_app/$': typeof AppSplatRoute
   '/_app/404': typeof App404Route
   '/_app/acces-refuse': typeof AppAccesRefuseRoute
-  '/_app/design-system': typeof AppDesignSystemRoute
+  '/_app/aide-etudes': typeof AppAideEtudesRoute
+  '/_app/boutique-premium': typeof AppBoutiquePremiumRoute
   '/_app/favoris': typeof AppFavorisRoute
   '/_app/je-recherche': typeof AppJeRechercheRoute
   '/_app/marketplace': typeof AppMarketplaceRoute
   '/_app/messages': typeof AppMessagesRouteWithChildren
   '/_app/notifications': typeof AppNotificationsRoute
+  '/_app/progression': typeof AppProgressionRoute
   '/_app/publier': typeof AppPublierRoute
   '/_auth/bienvenue': typeof AuthBienvenueRoute
   '/_auth/connexion': typeof AuthConnexionRoute
   '/_auth/mot-de-passe-oublie': typeof AuthMotDePasseOublieRoute
+  '/_legal/conditions': typeof LegalConditionsRoute
+  '/_legal/confidentialite': typeof LegalConfidentialiteRoute
+  '/_legal/mentions-legales': typeof LegalMentionsLegalesRoute
   '/_app/': typeof AppIndexRoute
   '/_app/aide/$id': typeof AppAideIdRoute
   '/_app/boutique/$id': typeof AppBoutiqueIdRoute
+  '/_app/emplois/$id': typeof AppEmploisIdRoute
+  '/_app/emplois/candidatures': typeof AppEmploisCandidaturesRoute
+  '/_app/emplois/profil': typeof AppEmploisProfilRoute
+  '/_app/emplois/recruteur': typeof AppEmploisRecruteurRoute
   '/_app/evenements/creer': typeof AppEvenementsCreerRoute
+  '/_app/invitation-equipe/$id': typeof AppInvitationEquipeIdRoute
   '/_app/messages/$id': typeof AppMessagesIdRoute
   '/_app/profil/achats': typeof AppProfilAchatsRoute
   '/_app/profil/annonces': typeof AppProfilAnnoncesRoute
+  '/_app/profil/finances': typeof AppProfilFinancesRoute
+  '/_app/profil/gains': typeof AppProfilGainsRoute
   '/_app/profil/parametres': typeof AppProfilParametresRoute
   '/_app/profil/verification': typeof AppProfilVerificationRoute
   '/_auth/inscription/compte-cree': typeof AuthInscriptionCompteCreeRoute
@@ -578,11 +782,14 @@ export interface FileRoutesById {
   '/_admin/admin/': typeof AdminAdminIndexRoute
   '/_app/aide/': typeof AppAideIndexRoute
   '/_app/communautes/': typeof AppCommunautesIndexRoute
+  '/_app/emplois/': typeof AppEmploisIndexRoute
   '/_app/evenements/': typeof AppEvenementsIndexRoute
   '/_app/formations/': typeof AppFormationsIndexRoute
   '/_app/groupes/': typeof AppGroupesIndexRoute
   '/_app/messages/': typeof AppMessagesIndexRoute
   '/_app/profil/': typeof AppProfilIndexRoute
+  '/_app/revision/': typeof AppRevisionIndexRoute
+  '/_app/tutorat/': typeof AppTutoratIndexRoute
   '/_app/universites/': typeof AppUniversitesIndexRoute
   '/_app/communautes/$id/membres': typeof AppCommunautesIdMembresRoute
   '/_app/evenements/$id/controle': typeof AppEvenementsIdControleRoute
@@ -590,8 +797,12 @@ export interface FileRoutesById {
   '/_app/groupes/$id/membres': typeof AppGroupesIdMembresRoute
   '/_app/produit/$id/achat-groupe': typeof AppProduitIdAchatGroupeRoute
   '/_app/produit/$id/acheter': typeof AppProduitIdAcheterRoute
+  '/_app/profil/recu/$id': typeof AppProfilRecuIdRoute
   '/_admin/admin/annonces/': typeof AdminAdminAnnoncesIndexRoute
+  '/_admin/admin/emplois/': typeof AdminAdminEmploisIndexRoute
+  '/_admin/admin/finances/': typeof AdminAdminFinancesIndexRoute
   '/_admin/admin/geographie/': typeof AdminAdminGeographieIndexRoute
+  '/_admin/admin/litiges/': typeof AdminAdminLitigesIndexRoute
   '/_admin/admin/parametres/': typeof AdminAdminParametresIndexRoute
   '/_admin/admin/securite/': typeof AdminAdminSecuriteIndexRoute
   '/_admin/admin/statistiques/': typeof AdminAdminStatistiquesIndexRoute
@@ -603,8 +814,12 @@ export interface FileRoutesById {
   '/_app/formations/$id/': typeof AppFormationsIdIndexRoute
   '/_app/groupes/$id/': typeof AppGroupesIdIndexRoute
   '/_app/produit/$id/': typeof AppProduitIdIndexRoute
+  '/_app/revision/$id/': typeof AppRevisionIdIndexRoute
+  '/_app/tutorat/$id/': typeof AppTutoratIdIndexRoute
   '/_app/universites/$id/': typeof AppUniversitesIdIndexRoute
   '/_app/formations/$id/modules/$moduleId': typeof AppFormationsIdModulesModuleIdRoute
+  '/_app/formations/$id/quiz-editeur/$quizId': typeof AppFormationsIdQuizEditeurQuizIdRoute
+  '/_app/formations/$id/quiz/$quizId': typeof AppFormationsIdQuizQuizIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -613,22 +828,34 @@ export interface FileRouteTypes {
     | '/$'
     | '/404'
     | '/acces-refuse'
-    | '/design-system'
+    | '/aide-etudes'
+    | '/boutique-premium'
     | '/favoris'
     | '/je-recherche'
     | '/marketplace'
     | '/messages'
     | '/notifications'
+    | '/progression'
     | '/publier'
     | '/bienvenue'
     | '/connexion'
     | '/mot-de-passe-oublie'
+    | '/conditions'
+    | '/confidentialite'
+    | '/mentions-legales'
     | '/aide/$id'
     | '/boutique/$id'
+    | '/emplois/$id'
+    | '/emplois/candidatures'
+    | '/emplois/profil'
+    | '/emplois/recruteur'
     | '/evenements/creer'
+    | '/invitation-equipe/$id'
     | '/messages/$id'
     | '/profil/achats'
     | '/profil/annonces'
+    | '/profil/finances'
+    | '/profil/gains'
     | '/profil/parametres'
     | '/profil/verification'
     | '/inscription/compte-cree'
@@ -644,11 +871,14 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/aide/'
     | '/communautes/'
+    | '/emplois/'
     | '/evenements/'
     | '/formations/'
     | '/groupes/'
     | '/messages/'
     | '/profil/'
+    | '/revision/'
+    | '/tutorat/'
     | '/universites/'
     | '/communautes/$id/membres'
     | '/evenements/$id/controle'
@@ -656,8 +886,12 @@ export interface FileRouteTypes {
     | '/groupes/$id/membres'
     | '/produit/$id/achat-groupe'
     | '/produit/$id/acheter'
+    | '/profil/recu/$id'
     | '/admin/annonces/'
+    | '/admin/emplois/'
+    | '/admin/finances/'
     | '/admin/geographie/'
+    | '/admin/litiges/'
     | '/admin/parametres/'
     | '/admin/securite/'
     | '/admin/statistiques/'
@@ -669,29 +903,45 @@ export interface FileRouteTypes {
     | '/formations/$id/'
     | '/groupes/$id/'
     | '/produit/$id/'
+    | '/revision/$id/'
+    | '/tutorat/$id/'
     | '/universites/$id/'
     | '/formations/$id/modules/$moduleId'
+    | '/formations/$id/quiz-editeur/$quizId'
+    | '/formations/$id/quiz/$quizId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/$'
     | '/404'
     | '/acces-refuse'
-    | '/design-system'
+    | '/aide-etudes'
+    | '/boutique-premium'
     | '/favoris'
     | '/je-recherche'
     | '/marketplace'
     | '/notifications'
+    | '/progression'
     | '/publier'
     | '/bienvenue'
     | '/connexion'
     | '/mot-de-passe-oublie'
+    | '/conditions'
+    | '/confidentialite'
+    | '/mentions-legales'
     | '/aide/$id'
     | '/boutique/$id'
+    | '/emplois/$id'
+    | '/emplois/candidatures'
+    | '/emplois/profil'
+    | '/emplois/recruteur'
     | '/evenements/creer'
+    | '/invitation-equipe/$id'
     | '/messages/$id'
     | '/profil/achats'
     | '/profil/annonces'
+    | '/profil/finances'
+    | '/profil/gains'
     | '/profil/parametres'
     | '/profil/verification'
     | '/inscription/compte-cree'
@@ -707,11 +957,14 @@ export interface FileRouteTypes {
     | '/admin'
     | '/aide'
     | '/communautes'
+    | '/emplois'
     | '/evenements'
     | '/formations'
     | '/groupes'
     | '/messages'
     | '/profil'
+    | '/revision'
+    | '/tutorat'
     | '/universites'
     | '/communautes/$id/membres'
     | '/evenements/$id/controle'
@@ -719,8 +972,12 @@ export interface FileRouteTypes {
     | '/groupes/$id/membres'
     | '/produit/$id/achat-groupe'
     | '/produit/$id/acheter'
+    | '/profil/recu/$id'
     | '/admin/annonces'
+    | '/admin/emplois'
+    | '/admin/finances'
     | '/admin/geographie'
+    | '/admin/litiges'
     | '/admin/parametres'
     | '/admin/securite'
     | '/admin/statistiques'
@@ -732,33 +989,50 @@ export interface FileRouteTypes {
     | '/formations/$id'
     | '/groupes/$id'
     | '/produit/$id'
+    | '/revision/$id'
+    | '/tutorat/$id'
     | '/universites/$id'
     | '/formations/$id/modules/$moduleId'
+    | '/formations/$id/quiz-editeur/$quizId'
+    | '/formations/$id/quiz/$quizId'
   id:
     | '__root__'
     | '/_admin'
     | '/_app'
     | '/_auth'
+    | '/_legal'
     | '/_app/$'
     | '/_app/404'
     | '/_app/acces-refuse'
-    | '/_app/design-system'
+    | '/_app/aide-etudes'
+    | '/_app/boutique-premium'
     | '/_app/favoris'
     | '/_app/je-recherche'
     | '/_app/marketplace'
     | '/_app/messages'
     | '/_app/notifications'
+    | '/_app/progression'
     | '/_app/publier'
     | '/_auth/bienvenue'
     | '/_auth/connexion'
     | '/_auth/mot-de-passe-oublie'
+    | '/_legal/conditions'
+    | '/_legal/confidentialite'
+    | '/_legal/mentions-legales'
     | '/_app/'
     | '/_app/aide/$id'
     | '/_app/boutique/$id'
+    | '/_app/emplois/$id'
+    | '/_app/emplois/candidatures'
+    | '/_app/emplois/profil'
+    | '/_app/emplois/recruteur'
     | '/_app/evenements/creer'
+    | '/_app/invitation-equipe/$id'
     | '/_app/messages/$id'
     | '/_app/profil/achats'
     | '/_app/profil/annonces'
+    | '/_app/profil/finances'
+    | '/_app/profil/gains'
     | '/_app/profil/parametres'
     | '/_app/profil/verification'
     | '/_auth/inscription/compte-cree'
@@ -774,11 +1048,14 @@ export interface FileRouteTypes {
     | '/_admin/admin/'
     | '/_app/aide/'
     | '/_app/communautes/'
+    | '/_app/emplois/'
     | '/_app/evenements/'
     | '/_app/formations/'
     | '/_app/groupes/'
     | '/_app/messages/'
     | '/_app/profil/'
+    | '/_app/revision/'
+    | '/_app/tutorat/'
     | '/_app/universites/'
     | '/_app/communautes/$id/membres'
     | '/_app/evenements/$id/controle'
@@ -786,8 +1063,12 @@ export interface FileRouteTypes {
     | '/_app/groupes/$id/membres'
     | '/_app/produit/$id/achat-groupe'
     | '/_app/produit/$id/acheter'
+    | '/_app/profil/recu/$id'
     | '/_admin/admin/annonces/'
+    | '/_admin/admin/emplois/'
+    | '/_admin/admin/finances/'
     | '/_admin/admin/geographie/'
+    | '/_admin/admin/litiges/'
     | '/_admin/admin/parametres/'
     | '/_admin/admin/securite/'
     | '/_admin/admin/statistiques/'
@@ -799,14 +1080,19 @@ export interface FileRouteTypes {
     | '/_app/formations/$id/'
     | '/_app/groupes/$id/'
     | '/_app/produit/$id/'
+    | '/_app/revision/$id/'
+    | '/_app/tutorat/$id/'
     | '/_app/universites/$id/'
     | '/_app/formations/$id/modules/$moduleId'
+    | '/_app/formations/$id/quiz-editeur/$quizId'
+    | '/_app/formations/$id/quiz/$quizId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
+  LegalRoute: typeof LegalRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -830,6 +1116,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_legal': {
+      id: '/_legal'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof LegalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/': {
@@ -860,11 +1153,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAccesRefuseRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/design-system': {
-      id: '/_app/design-system'
-      path: '/design-system'
-      fullPath: '/design-system'
-      preLoaderRoute: typeof AppDesignSystemRouteImport
+    '/_app/aide-etudes': {
+      id: '/_app/aide-etudes'
+      path: '/aide-etudes'
+      fullPath: '/aide-etudes'
+      preLoaderRoute: typeof AppAideEtudesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/boutique-premium': {
+      id: '/_app/boutique-premium'
+      path: '/boutique-premium'
+      fullPath: '/boutique-premium'
+      preLoaderRoute: typeof AppBoutiquePremiumRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/favoris': {
@@ -902,6 +1202,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppNotificationsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/progression': {
+      id: '/_app/progression'
+      path: '/progression'
+      fullPath: '/progression'
+      preLoaderRoute: typeof AppProgressionRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/publier': {
       id: '/_app/publier'
       path: '/publier'
@@ -929,6 +1236,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/mot-de-passe-oublie'
       preLoaderRoute: typeof AuthMotDePasseOublieRouteImport
       parentRoute: typeof AuthRoute
+    }
+    '/_legal/conditions': {
+      id: '/_legal/conditions'
+      path: '/conditions'
+      fullPath: '/conditions'
+      preLoaderRoute: typeof LegalConditionsRouteImport
+      parentRoute: typeof LegalRoute
+    }
+    '/_legal/confidentialite': {
+      id: '/_legal/confidentialite'
+      path: '/confidentialite'
+      fullPath: '/confidentialite'
+      preLoaderRoute: typeof LegalConfidentialiteRouteImport
+      parentRoute: typeof LegalRoute
+    }
+    '/_legal/mentions-legales': {
+      id: '/_legal/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof LegalMentionsLegalesRouteImport
+      parentRoute: typeof LegalRoute
     }
     '/_admin/admin/': {
       id: '/_admin/admin/'
@@ -965,6 +1293,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCommunautesIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/emplois/': {
+      id: '/_app/emplois/'
+      path: '/emplois'
+      fullPath: '/emplois/'
+      preLoaderRoute: typeof AppEmploisIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/emplois/$id': {
+      id: '/_app/emplois/$id'
+      path: '/emplois/$id'
+      fullPath: '/emplois/$id'
+      preLoaderRoute: typeof AppEmploisIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/emplois/candidatures': {
+      id: '/_app/emplois/candidatures'
+      path: '/emplois/candidatures'
+      fullPath: '/emplois/candidatures'
+      preLoaderRoute: typeof AppEmploisCandidaturesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/emplois/profil': {
+      id: '/_app/emplois/profil'
+      path: '/emplois/profil'
+      fullPath: '/emplois/profil'
+      preLoaderRoute: typeof AppEmploisProfilRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/emplois/recruteur': {
+      id: '/_app/emplois/recruteur'
+      path: '/emplois/recruteur'
+      fullPath: '/emplois/recruteur'
+      preLoaderRoute: typeof AppEmploisRecruteurRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/evenements/': {
       id: '/_app/evenements/'
       path: '/evenements'
@@ -991,6 +1354,13 @@ declare module '@tanstack/react-router' {
       path: '/groupes'
       fullPath: '/groupes/'
       preLoaderRoute: typeof AppGroupesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/invitation-equipe/$id': {
+      id: '/_app/invitation-equipe/$id'
+      path: '/invitation-equipe/$id'
+      fullPath: '/invitation-equipe/$id'
+      preLoaderRoute: typeof AppInvitationEquipeIdRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/messages/': {
@@ -1028,6 +1398,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfilAnnoncesRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/profil/finances': {
+      id: '/_app/profil/finances'
+      path: '/profil/finances'
+      fullPath: '/profil/finances'
+      preLoaderRoute: typeof AppProfilFinancesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/profil/gains': {
+      id: '/_app/profil/gains'
+      path: '/profil/gains'
+      fullPath: '/profil/gains'
+      preLoaderRoute: typeof AppProfilGainsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/profil/parametres': {
       id: '/_app/profil/parametres'
       path: '/profil/parametres'
@@ -1040,6 +1424,20 @@ declare module '@tanstack/react-router' {
       path: '/profil/verification'
       fullPath: '/profil/verification'
       preLoaderRoute: typeof AppProfilVerificationRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/revision/': {
+      id: '/_app/revision/'
+      path: '/revision'
+      fullPath: '/revision/'
+      preLoaderRoute: typeof AppRevisionIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/tutorat/': {
+      id: '/_app/tutorat/'
+      path: '/tutorat'
+      fullPath: '/tutorat/'
+      preLoaderRoute: typeof AppTutoratIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/universites/': {
@@ -1126,11 +1524,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminAnnoncesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/admin/emplois/': {
+      id: '/_admin/admin/emplois/'
+      path: '/admin/emplois'
+      fullPath: '/admin/emplois/'
+      preLoaderRoute: typeof AdminAdminEmploisIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/finances/': {
+      id: '/_admin/admin/finances/'
+      path: '/admin/finances'
+      fullPath: '/admin/finances/'
+      preLoaderRoute: typeof AdminAdminFinancesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_admin/admin/geographie/': {
       id: '/_admin/admin/geographie/'
       path: '/admin/geographie'
       fullPath: '/admin/geographie/'
       preLoaderRoute: typeof AdminAdminGeographieIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/litiges/': {
+      id: '/_admin/admin/litiges/'
+      path: '/admin/litiges'
+      fullPath: '/admin/litiges/'
+      preLoaderRoute: typeof AdminAdminLitigesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_admin/admin/parametres/': {
@@ -1252,6 +1671,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProduitIdAcheterRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/profil/recu/$id': {
+      id: '/_app/profil/recu/$id'
+      path: '/profil/recu/$id'
+      fullPath: '/profil/recu/$id'
+      preLoaderRoute: typeof AppProfilRecuIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/revision/$id/': {
+      id: '/_app/revision/$id/'
+      path: '/revision/$id'
+      fullPath: '/revision/$id/'
+      preLoaderRoute: typeof AppRevisionIdIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/tutorat/$id/': {
+      id: '/_app/tutorat/$id/'
+      path: '/tutorat/$id'
+      fullPath: '/tutorat/$id/'
+      preLoaderRoute: typeof AppTutoratIdIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/universites/$id/': {
       id: '/_app/universites/$id/'
       path: '/universites/$id'
@@ -1266,13 +1706,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFormationsIdModulesModuleIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/formations/$id/quiz-editeur/$quizId': {
+      id: '/_app/formations/$id/quiz-editeur/$quizId'
+      path: '/formations/$id/quiz-editeur/$quizId'
+      fullPath: '/formations/$id/quiz-editeur/$quizId'
+      preLoaderRoute: typeof AppFormationsIdQuizEditeurQuizIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/formations/$id/quiz/$quizId': {
+      id: '/_app/formations/$id/quiz/$quizId'
+      path: '/formations/$id/quiz/$quizId'
+      fullPath: '/formations/$id/quiz/$quizId'
+      preLoaderRoute: typeof AppFormationsIdQuizQuizIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
   AdminAdminIndexRoute: typeof AdminAdminIndexRoute
   AdminAdminAnnoncesIndexRoute: typeof AdminAdminAnnoncesIndexRoute
+  AdminAdminEmploisIndexRoute: typeof AdminAdminEmploisIndexRoute
+  AdminAdminFinancesIndexRoute: typeof AdminAdminFinancesIndexRoute
   AdminAdminGeographieIndexRoute: typeof AdminAdminGeographieIndexRoute
+  AdminAdminLitigesIndexRoute: typeof AdminAdminLitigesIndexRoute
   AdminAdminParametresIndexRoute: typeof AdminAdminParametresIndexRoute
   AdminAdminSecuriteIndexRoute: typeof AdminAdminSecuriteIndexRoute
   AdminAdminStatistiquesIndexRoute: typeof AdminAdminStatistiquesIndexRoute
@@ -1284,7 +1741,10 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAdminIndexRoute: AdminAdminIndexRoute,
   AdminAdminAnnoncesIndexRoute: AdminAdminAnnoncesIndexRoute,
+  AdminAdminEmploisIndexRoute: AdminAdminEmploisIndexRoute,
+  AdminAdminFinancesIndexRoute: AdminAdminFinancesIndexRoute,
   AdminAdminGeographieIndexRoute: AdminAdminGeographieIndexRoute,
+  AdminAdminLitigesIndexRoute: AdminAdminLitigesIndexRoute,
   AdminAdminParametresIndexRoute: AdminAdminParametresIndexRoute,
   AdminAdminSecuriteIndexRoute: AdminAdminSecuriteIndexRoute,
   AdminAdminStatistiquesIndexRoute: AdminAdminStatistiquesIndexRoute,
@@ -1313,27 +1773,39 @@ interface AppRouteChildren {
   AppSplatRoute: typeof AppSplatRoute
   App404Route: typeof App404Route
   AppAccesRefuseRoute: typeof AppAccesRefuseRoute
-  AppDesignSystemRoute: typeof AppDesignSystemRoute
+  AppAideEtudesRoute: typeof AppAideEtudesRoute
+  AppBoutiquePremiumRoute: typeof AppBoutiquePremiumRoute
   AppFavorisRoute: typeof AppFavorisRoute
   AppJeRechercheRoute: typeof AppJeRechercheRoute
   AppMarketplaceRoute: typeof AppMarketplaceRoute
   AppMessagesRoute: typeof AppMessagesRouteWithChildren
   AppNotificationsRoute: typeof AppNotificationsRoute
+  AppProgressionRoute: typeof AppProgressionRoute
   AppPublierRoute: typeof AppPublierRoute
   AppIndexRoute: typeof AppIndexRoute
   AppAideIdRoute: typeof AppAideIdRoute
   AppBoutiqueIdRoute: typeof AppBoutiqueIdRoute
+  AppEmploisIdRoute: typeof AppEmploisIdRoute
+  AppEmploisCandidaturesRoute: typeof AppEmploisCandidaturesRoute
+  AppEmploisProfilRoute: typeof AppEmploisProfilRoute
+  AppEmploisRecruteurRoute: typeof AppEmploisRecruteurRoute
   AppEvenementsCreerRoute: typeof AppEvenementsCreerRoute
+  AppInvitationEquipeIdRoute: typeof AppInvitationEquipeIdRoute
   AppProfilAchatsRoute: typeof AppProfilAchatsRoute
   AppProfilAnnoncesRoute: typeof AppProfilAnnoncesRoute
+  AppProfilFinancesRoute: typeof AppProfilFinancesRoute
+  AppProfilGainsRoute: typeof AppProfilGainsRoute
   AppProfilParametresRoute: typeof AppProfilParametresRoute
   AppProfilVerificationRoute: typeof AppProfilVerificationRoute
   AppAideIndexRoute: typeof AppAideIndexRoute
   AppCommunautesIndexRoute: typeof AppCommunautesIndexRoute
+  AppEmploisIndexRoute: typeof AppEmploisIndexRoute
   AppEvenementsIndexRoute: typeof AppEvenementsIndexRoute
   AppFormationsIndexRoute: typeof AppFormationsIndexRoute
   AppGroupesIndexRoute: typeof AppGroupesIndexRoute
   AppProfilIndexRoute: typeof AppProfilIndexRoute
+  AppRevisionIndexRoute: typeof AppRevisionIndexRoute
+  AppTutoratIndexRoute: typeof AppTutoratIndexRoute
   AppUniversitesIndexRoute: typeof AppUniversitesIndexRoute
   AppCommunautesIdMembresRoute: typeof AppCommunautesIdMembresRoute
   AppEvenementsIdControleRoute: typeof AppEvenementsIdControleRoute
@@ -1341,40 +1813,57 @@ interface AppRouteChildren {
   AppGroupesIdMembresRoute: typeof AppGroupesIdMembresRoute
   AppProduitIdAchatGroupeRoute: typeof AppProduitIdAchatGroupeRoute
   AppProduitIdAcheterRoute: typeof AppProduitIdAcheterRoute
+  AppProfilRecuIdRoute: typeof AppProfilRecuIdRoute
   AppCommunautesIdIndexRoute: typeof AppCommunautesIdIndexRoute
   AppEvenementsIdIndexRoute: typeof AppEvenementsIdIndexRoute
   AppFormationsIdIndexRoute: typeof AppFormationsIdIndexRoute
   AppGroupesIdIndexRoute: typeof AppGroupesIdIndexRoute
   AppProduitIdIndexRoute: typeof AppProduitIdIndexRoute
+  AppRevisionIdIndexRoute: typeof AppRevisionIdIndexRoute
+  AppTutoratIdIndexRoute: typeof AppTutoratIdIndexRoute
   AppUniversitesIdIndexRoute: typeof AppUniversitesIdIndexRoute
   AppFormationsIdModulesModuleIdRoute: typeof AppFormationsIdModulesModuleIdRoute
+  AppFormationsIdQuizEditeurQuizIdRoute: typeof AppFormationsIdQuizEditeurQuizIdRoute
+  AppFormationsIdQuizQuizIdRoute: typeof AppFormationsIdQuizQuizIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppSplatRoute: AppSplatRoute,
   App404Route: App404Route,
   AppAccesRefuseRoute: AppAccesRefuseRoute,
-  AppDesignSystemRoute: AppDesignSystemRoute,
+  AppAideEtudesRoute: AppAideEtudesRoute,
+  AppBoutiquePremiumRoute: AppBoutiquePremiumRoute,
   AppFavorisRoute: AppFavorisRoute,
   AppJeRechercheRoute: AppJeRechercheRoute,
   AppMarketplaceRoute: AppMarketplaceRoute,
   AppMessagesRoute: AppMessagesRouteWithChildren,
   AppNotificationsRoute: AppNotificationsRoute,
+  AppProgressionRoute: AppProgressionRoute,
   AppPublierRoute: AppPublierRoute,
   AppIndexRoute: AppIndexRoute,
   AppAideIdRoute: AppAideIdRoute,
   AppBoutiqueIdRoute: AppBoutiqueIdRoute,
+  AppEmploisIdRoute: AppEmploisIdRoute,
+  AppEmploisCandidaturesRoute: AppEmploisCandidaturesRoute,
+  AppEmploisProfilRoute: AppEmploisProfilRoute,
+  AppEmploisRecruteurRoute: AppEmploisRecruteurRoute,
   AppEvenementsCreerRoute: AppEvenementsCreerRoute,
+  AppInvitationEquipeIdRoute: AppInvitationEquipeIdRoute,
   AppProfilAchatsRoute: AppProfilAchatsRoute,
   AppProfilAnnoncesRoute: AppProfilAnnoncesRoute,
+  AppProfilFinancesRoute: AppProfilFinancesRoute,
+  AppProfilGainsRoute: AppProfilGainsRoute,
   AppProfilParametresRoute: AppProfilParametresRoute,
   AppProfilVerificationRoute: AppProfilVerificationRoute,
   AppAideIndexRoute: AppAideIndexRoute,
   AppCommunautesIndexRoute: AppCommunautesIndexRoute,
+  AppEmploisIndexRoute: AppEmploisIndexRoute,
   AppEvenementsIndexRoute: AppEvenementsIndexRoute,
   AppFormationsIndexRoute: AppFormationsIndexRoute,
   AppGroupesIndexRoute: AppGroupesIndexRoute,
   AppProfilIndexRoute: AppProfilIndexRoute,
+  AppRevisionIndexRoute: AppRevisionIndexRoute,
+  AppTutoratIndexRoute: AppTutoratIndexRoute,
   AppUniversitesIndexRoute: AppUniversitesIndexRoute,
   AppCommunautesIdMembresRoute: AppCommunautesIdMembresRoute,
   AppEvenementsIdControleRoute: AppEvenementsIdControleRoute,
@@ -1382,13 +1871,18 @@ const AppRouteChildren: AppRouteChildren = {
   AppGroupesIdMembresRoute: AppGroupesIdMembresRoute,
   AppProduitIdAchatGroupeRoute: AppProduitIdAchatGroupeRoute,
   AppProduitIdAcheterRoute: AppProduitIdAcheterRoute,
+  AppProfilRecuIdRoute: AppProfilRecuIdRoute,
   AppCommunautesIdIndexRoute: AppCommunautesIdIndexRoute,
   AppEvenementsIdIndexRoute: AppEvenementsIdIndexRoute,
   AppFormationsIdIndexRoute: AppFormationsIdIndexRoute,
   AppGroupesIdIndexRoute: AppGroupesIdIndexRoute,
   AppProduitIdIndexRoute: AppProduitIdIndexRoute,
+  AppRevisionIdIndexRoute: AppRevisionIdIndexRoute,
+  AppTutoratIdIndexRoute: AppTutoratIdIndexRoute,
   AppUniversitesIdIndexRoute: AppUniversitesIdIndexRoute,
   AppFormationsIdModulesModuleIdRoute: AppFormationsIdModulesModuleIdRoute,
+  AppFormationsIdQuizEditeurQuizIdRoute: AppFormationsIdQuizEditeurQuizIdRoute,
+  AppFormationsIdQuizQuizIdRoute: AppFormationsIdQuizQuizIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -1428,10 +1922,25 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface LegalRouteChildren {
+  LegalConditionsRoute: typeof LegalConditionsRoute
+  LegalConfidentialiteRoute: typeof LegalConfidentialiteRoute
+  LegalMentionsLegalesRoute: typeof LegalMentionsLegalesRoute
+}
+
+const LegalRouteChildren: LegalRouteChildren = {
+  LegalConditionsRoute: LegalConditionsRoute,
+  LegalConfidentialiteRoute: LegalConfidentialiteRoute,
+  LegalMentionsLegalesRoute: LegalMentionsLegalesRoute,
+}
+
+const LegalRouteWithChildren = LegalRoute._addFileChildren(LegalRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
+  LegalRoute: LegalRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

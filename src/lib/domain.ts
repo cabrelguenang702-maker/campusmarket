@@ -100,6 +100,11 @@ export type Seller = {
 
 /* ---------- Dates ---------- */
 
+/** « 14 oct. 2026 » : date lisible, sans l'heure. */
+export function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+}
+
 export function timeAgo(iso: string, now: number = Date.now()): string {
   const s = Math.max(0, Math.round((now - new Date(iso).getTime()) / 1000));
   if (s < 60) return "à l'instant";

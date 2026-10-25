@@ -314,6 +314,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     signingOut.current = true;
     try {
+      // Détache d'abord cet appareil des notifications push du compte (encore connecté à ce stade) ; sans blocage si ça échoue.
+      await Promise.race([import("./push").then((m) => m.unlinkPushDevice()).catch(() => undefined), new Promise((resolve) => setTimeout(resolve, 3000))]);
       await getSupabase()?.auth.signOut();
     } finally {
       signingOut.current = false;

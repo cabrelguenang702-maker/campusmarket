@@ -6,6 +6,11 @@ export function isNetworkError(error: unknown): boolean {
   return /failed to fetch|networkerror|load failed|network request failed/i.test(message);
 }
 
+/** Erreur dont le message est déjà rédigé pour l'utilisateur : friendlyError l'affiche tel quel (les autres erreurs inattendues reçoivent le texte de repli). */
+export class UserFacingError extends Error {
+  constructor(message: string) { super(message); this.name = "UserFacingError"; }
+}
+
 type DbError = { code?: string; message?: string };
 
 /**
@@ -13,6 +18,7 @@ type DbError = { code?: string; message?: string };
  * sont déjà rédigées en français pour l'utilisateur (limites de fréquence, règles métier) : on les montre telles quelles.
  */
 export function friendlyError(error: unknown, fallback = "Une erreur est survenue. Réessayez dans un instant."): string {
+  if (error instanceof UserFacingError) return error.message;
   if (isNetworkError(error)) return "Connexion impossible. Vérifiez votre réseau et réessayez.";
   const e = (typeof error === "object" && error !== null ? error : {}) as DbError;
   if (e.code === "P0001" && e.message) return e.message;

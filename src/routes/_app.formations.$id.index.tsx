@@ -17,6 +17,7 @@ import { useAcademyActions, useCourse, useCourseReviews, useLearner, useSaveRevi
 import { friendlyError, isNetworkError } from "@/lib/api/errors";
 import { timeAgo } from "@/lib/domain";
 import { useAuth } from "@/lib/auth";
+import { QuizSection } from "@/components/academy/QuizSection";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_app/formations/$id/")({
@@ -150,6 +151,7 @@ function CoursePage() {
             </div>
           )}
 
+          {tab === "modules" && <QuizSection courseId={course.id} enrolled={enrolled} />}
           {tab === "modules" && (
             <section className="overflow-hidden rounded-xl border border-border bg-card" aria-label="Modules de la formation">
               <div className="border-b border-border px-5 py-4"><h2 className="font-display text-lg font-bold">Contenu de la formation</h2><p className="text-xs text-muted-foreground">{total} modules · {formatDuration(courseMinutes(course))}</p></div>

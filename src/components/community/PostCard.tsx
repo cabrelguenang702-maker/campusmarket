@@ -3,7 +3,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Flag, MoreHorizontal, Pin, Send, Trash } from "@/components/icons";
+import { Flag, MoreHorizontal, Pencil, Pin, Send, Trash } from "@/components/icons";
+import { Textarea } from "@/components/ui/textarea";
 import { Avatar } from "@/components/cm/commerce";
 import { ConfirmDialog, Spinner } from "@/components/cm/feedback";
 import { Pill } from "@/components/cm/badges";
@@ -12,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { friendlyError } from "@/lib/api/errors";
 import { submitReport } from "@/lib/api/engagement";
 import { useCommentActions, useComments, usePostActions, type FeedPost } from "@/lib/api/spaces";
+import { useEditPost } from "@/lib/api/spaces-manage";
 import { useAuth } from "@/lib/auth";
 import { timeAgo } from "@/lib/domain";
 import { reactionKinds, reactionMeta, type ReactionKind } from "@/lib/spaces-model";
@@ -71,6 +73,9 @@ export function PostCard({ post, canModerate }: { post: FeedPost; canModerate: b
   const actions = usePostActions(post.spaceId, userId);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(post.text);
+  const edit = useEditPost(post.spaceId);
   const isMine = post.authorId === userId;
   const current = post.myReaction;
   const CurrentIcon = current ? reactionMeta[current].icon : reactionMeta.jaime.icon;
@@ -94,13 +99,22 @@ export function PostCard({ post, canModerate }: { post: FeedPost; canModerate: b
           <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="-mr-2 -mt-1 size-8 shrink-0" aria-label="Actions de la publication"><MoreHorizontal /></Button></DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {canModerate && <DropdownMenuItem className="cursor-pointer" onClick={() => actions.pin.mutate({ id: post.id, pinned: !post.pinned }, { onSuccess: () => toast.success(post.pinned ? "Publication désépinglée" : "Publication épinglée"), onError: fail("Action impossible") })}><Pin /> {post.pinned ? "Désépingler" : "Épingler"}</DropdownMenuItem>}
+            {isMine && !post.pinned && <DropdownMenuItem className="cursor-pointer" onClick={() => { setDraft(post.text); setEditing(true); }}><Pencil /> Modifier</DropdownMenuItem>}
             {(canModerate || isMine) && <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive" onClick={() => setConfirmDelete(true)}><Trash /> Supprimer</DropdownMenuItem>}
             {!isMine && <DropdownMenuItem className="cursor-pointer" onClick={() => void report()}><Flag /> Signaler</DropdownMenuItem>}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
 
-      <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-6">{post.text}</p>
+      {editing ? (
+        <div className="mt-3 space-y-2">
+          <Textarea value={draft} maxLength={3000} aria-label="Modifier la publication" onChange={(e) => setDraft(e.target.value)} />
+          <div className="flex justify-end gap-2">
+            <Button size="sm" variant="outline" disabled={edit.isPending} onClick={() => setEditing(false)}>Annuler</Button>
+            <Button size="sm" disabled={edit.isPending || !draft.trim() || draft.trim() === post.text} onClick={() => edit.mutate({ id: post.id, text: draft }, { onSuccess: () => { setEditing(false); toast.success("Publication modifiée"); }, onError: fail("Modification impossible") })}>{edit.isPending ? <Spinner className="size-4" /> : "Enregistrer"}</Button>
+          </div>
+        </div>
+      ) : <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-6">{post.text}</p>}
       {post.imageUrl && <img src={post.imageUrl} alt="Image de la publication" loading="lazy" className="mt-3 max-h-[28rem] w-full rounded-lg bg-muted object-cover" />}
 
       <div className="mt-3 flex items-center justify-between border-t border-border pt-3">

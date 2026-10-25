@@ -75,14 +75,21 @@ function securityHeaders(env: unknown): Record<string, string> {
     /* URL invalide : on garde le repli */
   }
 
+  // OneSignal (VITE_PUSH_PROVIDER=onesignal) charge son SDK depuis cdn.onesignal.com et parle à *.onesignal.com :
+  // ces origines ne sont ouvertes que dans ce cas. Le Web Push natif n'a besoin d'aucune ouverture.
+  const oneSignal = import.meta.env.VITE_PUSH_PROVIDER === "onesignal";
+  const osScript = oneSignal ? " https://cdn.onesignal.com" : "";
+  const osNet = oneSignal ? " https://onesignal.com https://*.onesignal.com" : "";
+
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline'",
+    `script-src 'self' 'unsafe-inline'${osScript}`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
-    `img-src 'self' data: blob: ${supabaseOrigin}`,
+    `img-src 'self' data: blob: ${supabaseOrigin}${osNet}`,
     `media-src 'self' blob: ${supabaseOrigin}`,
-    `connect-src 'self' ${supabaseOrigin} ${supabaseWs}`,
+    `connect-src 'self' ${supabaseOrigin} ${supabaseWs}${osNet}`,
+    ...(oneSignal ? [`frame-src 'self'${osNet}`] : []),
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

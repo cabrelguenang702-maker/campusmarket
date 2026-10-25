@@ -3,7 +3,7 @@ import type { Product } from "../domain";
 import { displayStatus, type GroupBuy, type MyParticipation } from "../groupbuy-model";
 import { getSupabase, requireSupabase } from "../supabase";
 import { fetchProductsByIds } from "./products";
-import { friendlyError } from "./errors";
+import { UserFacingError, friendlyError } from "./errors";
 
 /* Achats groupés. Rejoindre = s'engager sans payer ; à l'objectif atteint, chaque participant a 48 h pour payer au prix du
  * palier par une commande normale. Qui se retire ou ne paie pas est bloqué 48 h pour rejoindre un achat groupé (levable
@@ -126,7 +126,7 @@ export function useGroupBuyActions() {
     mutationFn: async (groupId: string) => {
       const { data, error } = await requireSupabase().from("group_purchases").update({ status: "cancelled" }).eq("id", groupId).eq("status", "active").select("id");
       if (error) throw error;
-      if (!data || data.length === 0) throw new Error("Cet achat groupé ne peut plus être annulé.");
+      if (!data || data.length === 0) throw new UserFacingError("Cet achat groupé ne peut plus être annulé.");
     },
     onSettled: refresh,
   });

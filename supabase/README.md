@@ -59,6 +59,7 @@ supabase/
     payments-webhook/               reçoit les notifications CamPay (public, idempotent, reconfirmation serveur)
     payments-reconcile/             job périodique (cron) — rattrape les webhooks jamais reçus
     notifications-dispatch/         vide la file e-mail (cron) — corps générique, aucun contenu sensible
+    push-dispatch/                  vide la file push (cron) — OneSignal ou Web Push, corps générique
     course-checkout-initiate/       équivalent payments-initiate pour l'inscription à une formation payante
     (billets d'événement payants : même pipeline, payments.event_ticket_id — pas de fonction dédiée encore)
     phone-otp-request/              génère et envoie un code de vérification téléphone (6 chiffres, 10 min)

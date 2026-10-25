@@ -57,10 +57,10 @@ function CountryPage() {
                 selected={country.code === c.code}
                 onSelect={() => setCountry(c)}
                 title={c.name}
-                description={`${c.dial} · ${c.mobileMoney.join(", ")}`}
+                description={`${c.dial} · ${c.mobileMoney.length > 0 ? c.mobileMoney.join(", ") : "Paiement Mobile Money bientôt disponible"}`}
                 trailing={
-                  <span className="grid h-6 w-8 place-items-center rounded bg-accent text-[10px] font-bold text-accent-foreground">
-                    {c.code}
+                  <span className="grid h-6 w-8 place-items-center rounded bg-accent text-lg leading-none" aria-label={c.code}>
+                    {c.flag ?? c.code}
                   </span>
                 }
               />

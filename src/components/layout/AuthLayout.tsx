@@ -5,6 +5,7 @@ import heroImage from "@/assets/campus-market-hero.jpg";
 import { Logo } from "@/components/cm/brand";
 import { AppLink } from "@/components/cm/app-link";
 import { ThemeToggle } from "@/components/layout/AppShell";
+import { LegalLinks } from "@/components/layout/LegalLinks";
 import { OnboardingProvider } from "@/lib/onboarding";
 
 const perks = [
@@ -48,9 +49,7 @@ export function AuthLayout({ children }: { children?: ReactNode }) {
             </div>
           </header>
           <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 pb-10 pt-2 sm:pt-6">{children ?? <Outlet />}</main>
-          <footer className="px-4 pb-6 text-center text-[11px] text-muted-foreground">
-            <AppLink to="/aide" className="hover:text-primary hover:underline">Conditions d'utilisation</AppLink> · <AppLink to="/aide" className="hover:text-primary hover:underline">Confidentialité</AppLink>
-          </footer>
+          <LegalLinks className="px-4 pb-6" newTab />
         </div>
       </div>
     </OnboardingProvider>

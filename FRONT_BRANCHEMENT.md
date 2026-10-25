@@ -11,7 +11,7 @@ npm ci && npm run dev
 ```
 
 Sans ces deux variables, l'application affiche « Supabase n'est pas configuré » (aucun repli silencieux sur
-les maquettes). `VITE_DESIGN_REVIEW=true` réaffiche les barres de bascule d'états des écrans encore en maquette.
+les maquettes).
 Réglages du tableau de bord Supabase requis par l'authentification : **`supabase/AUTH_SETUP.md`**.
 
 ## Étape 1 — Authentification et inscription (faite)

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, ArrowRight, CheckCircle, Clock, RefreshCw, Smartphone } from "@/components/icons";
 import { formatFcfa, paymentMethods } from "@/lib/domain";
-import type { Country } from "@/lib/mock-data";
+import type { Country } from "@/lib/api/geo";
 import type { PaymentMethod, PaymentState } from "@/lib/api/payments";
 import { InlineAlert, Spinner, StateScreen } from "./feedback";
 import { Field, PhoneField, SelectableCard } from "./forms";
@@ -53,7 +53,7 @@ type Props = {
   reference?: string;
   /** Lignes du reçu affiché après confirmation. */
   receipt?: [string, string][];
-  /** Branchement réel : lance la demande de paiement (sans lui, le composant reste une maquette contrôlée). */
+  /** Branchement réel : lance la demande de paiement. */
   onPay?: () => void;
   payBusy?: boolean;
   payError?: string | null;

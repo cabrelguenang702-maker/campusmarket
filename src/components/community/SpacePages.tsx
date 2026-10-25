@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Flag, Globe, Lock, Plus, Search, Share, Users, X } from "@/components/icons";
+import { Flag, Globe, Lock, Plus, Search, Settings, Share, Users, X } from "@/components/icons";
+import { InvitationsBanner } from "@/components/community/InvitationsBanner";
+import { SpaceSettingsDialog } from "@/components/community/SpaceSettingsDialog";
 import { AppLink } from "@/components/cm/app-link";
 import { Avatar } from "@/components/cm/commerce";
 import { InlineAlert, Spinner, StateScreen } from "@/components/cm/feedback";
@@ -17,7 +19,7 @@ import { submitReport } from "@/lib/api/engagement";
 import { friendlyError, isNetworkError } from "@/lib/api/errors";
 import { statusIn, useFeed, useMyStates, useSpace, useSpaceCategories, useSpaceMembers, useSpaces } from "@/lib/api/spaces";
 import { useAuth } from "@/lib/auth";
-import { canModerate, isMember, kindLabels, memberLabel, roleLabel, type SpaceKind } from "@/lib/spaces-model";
+import { canAdminister, canModerate, isMember, kindLabels, memberLabel, roleLabel, type SpaceKind } from "@/lib/spaces-model";
 import { cn } from "@/lib/utils";
 
 /* Pages communes aux communautés et aux groupes : le `kind` décide des libellés et des chemins. */
@@ -58,6 +60,7 @@ export function SpacesListPage({ kind, search, onSearch }: { kind: SpaceKind; se
       <PageHeader kicker={kind === "communaute" ? "Communautés" : "Groupes"} title={title} description={kind === "communaute" ? "Échangez avec des étudiants qui partagent vos passions et vos projets." : "Retrouvez votre classe, votre promotion ou votre équipe pour échanger et s'organiser."} breadcrumbs={[{ label: "Accueil", to: "/" }, { label: kind === "communaute" ? "Communautés" : "Groupes" }]}
         actions={<Button onClick={() => setCreateOpen(true)}><Plus /> Créer</Button>} />
 
+      <InvitationsBanner />
       <form role="search" className="flex gap-2" onSubmit={(e) => { e.preventDefault(); onSearch({ q: qInput.trim() || undefined }); }}>
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
@@ -94,6 +97,8 @@ export function SpaceDetailPage({ kind, id }: { kind: SpaceKind; id: string }) {
   const status = statusIn(statesQuery.data, id);
   const member = isMember(status);
   const moderator = canModerate(status);
+  const administrator = canAdminister(status);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const feed = useFeed(id, member);
   const members = useSpaceMembers(id, member);
 
@@ -131,6 +136,7 @@ export function SpaceDetailPage({ kind, id }: { kind: SpaceKind; id: string }) {
           <div className="-mt-10 flex flex-wrap items-end justify-between gap-3 sm:-mt-12">
             <span className="grid size-20 place-items-center rounded-2xl border-4 border-card bg-secondary text-primary sm:size-24"><Icon className="size-9 sm:size-10" /></span>
             <div className="flex flex-wrap gap-2">
+              {administrator && <Button variant="outline" onClick={() => setSettingsOpen(true)}><Settings /> Réglages</Button>}
               <JoinButton space={space} status={status} />
               <Button variant="ghost" size="icon" aria-label={`Partager ${label.the}`} onClick={() => void share()}><Share /></Button>
               {!member && <Button variant="ghost" size="icon" aria-label={`Signaler ${label.the}`} onClick={() => void report()}><Flag /></Button>}
@@ -145,6 +151,8 @@ export function SpaceDetailPage({ kind, id }: { kind: SpaceKind; id: string }) {
         </div>
       </section>
 
+      {!member && <div className="mt-6"><InvitationsBanner spaceId={space.id} /></div>}
+      {administrator && <SpaceSettingsDialog space={space} open={settingsOpen} onOpenChange={setSettingsOpen} />}
       {!member ? (
         <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_300px]">
           <div className="rounded-xl border border-border bg-card"><StateScreen compact icon={Lock} tone="neutral" title="Publications réservées aux membres"

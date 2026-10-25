@@ -9,14 +9,16 @@ import {
   DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Bell, BadgeCheck, ChevronRight, Settings, HelpCircle, Home, Menu, MessageCircle, Moon, Plus, Store, Sun, User,
-  LogOut, ShoppingBag, Compass, ShieldCheck,
+  Bell, BadgeCheck, ChevronRight, Download, Settings, HelpCircle, Home, Menu, MessageCircle, Moon, Plus, Store, Sun, User,
+  LogOut, ShoppingBag, Compass, ShieldCheck, Briefcase,
 } from "@/components/icons";
 import { Logo } from "@/components/cm/brand";
 import { Avatar } from "@/components/cm/commerce";
 import { AppLink } from "@/components/cm/app-link";
 import { SearchField } from "@/components/cm/forms";
-import { mainNav, secondaryNav, type NavItem } from "@/lib/mock-data";
+import { mainNav, secondaryNav, type NavItem } from "@/lib/navigation";
+import { LegalLinks } from "@/components/layout/LegalLinks";
+import { usePwaInstall } from "@/lib/pwa";
 import { useAuth } from "@/lib/auth";
 import { useMessagesRealtime, useConversations } from "@/lib/api/messages";
 import { useNotifications, useNotificationActions, useNotificationsRealtime } from "@/lib/api/notifications";
@@ -116,6 +118,7 @@ export function UserMenu({ variant = "sidebar" }: { variant?: "sidebar" | "heade
           { label: "Mon profil", to: "/profil", icon: User },
           { label: "Mes annonces", to: "/profil/annonces", icon: Store },
           { label: "Mes achats", to: "/profil/achats", icon: ShoppingBag },
+          { label: "Campus Jobs", to: "/emplois", icon: Briefcase },
           { label: "Vérification du compte", to: "/profil/verification", icon: BadgeCheck },
           { label: "Paramètres", to: "/profil/parametres", icon: Settings },
           { label: "Centre d'aide", to: "/aide", icon: HelpCircle },
@@ -215,6 +218,7 @@ function SidebarBody({ onNavigate }: { onNavigate?: (() => void) | undefined }) 
           <NavList items={secondaryNav} onNavigate={onNavigate} />
         </div>
       </nav>
+      <SidebarInstall />
       <div className="mt-4 rounded-lg border border-border bg-secondary/70 p-3 [@media(max-height:860px)]:hidden">
         <p className="text-xs font-semibold">Besoin d'aide ?</p>
         <p className="mt-1 text-[11px] leading-4 text-muted-foreground">Notre équipe répond à vos questions.</p>
@@ -222,6 +226,15 @@ function SidebarBody({ onNavigate }: { onNavigate?: (() => void) | undefined }) 
       </div>
       <div className="mt-4 border-t border-sidebar-border pt-3"><UserMenu /></div>
     </div>
+  );
+}
+
+/** Bouton « Installer l'application » : n'apparaît que lorsque le navigateur permet l'installation en un clic et que l'app n'est pas déjà installée. */
+function SidebarInstall() {
+  const { state, install } = usePwaInstall();
+  if (state !== "available") return null;
+  return (
+    <Button variant="outline" size="sm" className="mt-4 w-full" onClick={() => void install()}><Download /> Installer l'application</Button>
   );
 }
 
@@ -296,7 +309,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <div className="ml-1 hidden md:block"><UserMenu variant="header" /></div>
           </div>
         </header>
-        <main id="contenu" className="mx-auto max-w-[1500px] px-4 pb-28 pt-5 md:pb-10 lg:px-7 lg:pt-7">{children}</main>
+        <main id="contenu" className="mx-auto max-w-[1500px] px-4 pb-28 pt-5 md:pb-10 lg:px-7 lg:pt-7">{children}<LegalLinks className="mt-10" /></main>
       </div>
       <BottomNav />
     </div>
