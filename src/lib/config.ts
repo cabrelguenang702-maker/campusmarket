@@ -14,3 +14,5 @@ export const SIGNUP_STEP_COUNT = 4;
 
 export const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+export const DESIGN_REVIEW_MODE = false;
